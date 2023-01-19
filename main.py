@@ -1,10 +1,22 @@
-from scr.preproc import read_data, add_nans, detect_nan_values, detect_null_values
+from src.preprocessing.collect_data import GetData
 
 
-url_list = ["data", "btcusd_datetime.csv"]
+class RunCryptoProject:
 
-df = read_data(url_list=url_list)
-df_nan = add_nans(df=df)
+    def __init__(self, data_path):
+        self.run = GetData(data_path=data_path)\
+            # .clean_data()
 
-x = detect_nan_values(df_nan)
-y = detect_null_values(df_nan)
+
+if __name__ == "__main__":
+
+    DATA_PATH = "C:\\Users\\Anast\\pythonProject\\Crypto_Prise_Prediction\\data"
+    run = RunCryptoProject(data_path=DATA_PATH)
+
+
+x = run.run.data
+x.iloc[3, :] = x.iloc[2, :]
+
+a = x.duplicated(subset="Date", keep=False).sum()
+
+zzz = x.drop_duplicates(subset="Date", keep="first")
