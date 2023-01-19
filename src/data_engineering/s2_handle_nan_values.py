@@ -44,6 +44,6 @@ class HandleNanValues:
         final_df.reset_index(inplace=True)
         return final_df
 
-    def hundle_duplicates(self):
+    def handle_duplicates(self):
         return HandleDuplicates(dataframe=self.df)
 

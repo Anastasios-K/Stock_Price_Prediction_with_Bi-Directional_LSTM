@@ -1,6 +1,6 @@
 import pandas as pd
 from src.secondary_modules.save_report import SaveReport
-from src.data_engineering.s5_validate_data_continuity import FixContinuity
+from src.data_engineering.s6_plot_data import PlotData
 
 
 class FixDataType:
@@ -28,5 +28,7 @@ class FixDataType:
         SaveReport(data=reporting_list, title=title)
         return df
 
-    def validate_continiuty(self):
-        return FixContinuity(dataframe=self.df)
+    def plot_data(self):
+        attributes = ["Open", "Close", "High", "Low"]
+        currencies = ["BTC", "ETH", "LTC", "ADA"]
+        PlotData(self.df, currencies=currencies, attributes=attributes)
