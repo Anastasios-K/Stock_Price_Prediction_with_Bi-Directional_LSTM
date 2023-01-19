@@ -2,6 +2,7 @@ import plotly.offline as pyo
 from plotly.subplots import make_subplots as mks
 from src.plotly_plots.scatter_plot import ScatterTrace
 import matplotlib.colors as mcolors
+from typing import List
 
 
 class PlotData:
@@ -10,21 +11,21 @@ class PlotData:
                  attributes,
                  currencies):
 
-        self.__layout(
-            df=df,
-            currencies=currencies,
-            attributes=attributes)
+        self.__layout(df=df,
+                      currencies=currencies,
+                      attributes=attributes)
 
     @staticmethod
-    def __fig(rows, cols):
-        return mks(rows=rows, cols=cols)
+    def __fig(currencies: List, cols: int):
+        rows=len(currencies)
+        return mks(rows=rows, cols=cols, row_titles=currencies)
 
     def __traces(self,
                  df,
                  attributes,
                  currencies):
         colours = mcolors.CSS4_COLORS
-        fig = self.__fig(rows=len(currencies), cols=1)
+        fig = self.__fig(currencies=currencies, cols=1)
 
         color_group = 0
         for idx, curr in enumerate(currencies):
@@ -40,11 +41,15 @@ class PlotData:
                     col=1
 
                 )
-                color_group += 4
+                color_group += len(currencies)
         return fig
 
     def __layout(self, df, currencies, attributes):
-        fig = self.__traces(df=df, currencies=currencies, attributes=attributes)
+        fig = self.__traces(
+            df=df,
+            currencies=currencies,
+            attributes=attributes
+        )
         fig.update_layout(
             plot_bgcolor="#D0D0CE",
             title=dict(

@@ -5,10 +5,9 @@ class DataEngineering:
 
     def __init__(self, data_path):
         self.data_engineering = GetData(data_path=data_path)\
-            .clean_data()\
-            .hundle_duplicates()\
+            .handle_nan_values()\
+            .handle_duplicates()\
             .fix_data_types()\
-            .validate_continiuty()\
             .plot_data()
 
 

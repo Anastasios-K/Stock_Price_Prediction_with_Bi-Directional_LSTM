@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import numpy as np
 from src.data_engineering.s2_handle_nan_values import HandleNanValues
-from src.data_engineering.s5_validate_data_continuity import FixContinuity
 
 
 class GetData:
@@ -57,5 +56,5 @@ class GetData:
         final_df = self.__merge_multiple_dfs(df_list=data_list)
         return final_df
 
-    def clean_data(self):
+    def handle_nan_values(self):
         return HandleNanValues(dataframe=self.data)
