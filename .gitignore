@@ -1,4 +1,6 @@
 venv
 data
 .idea
-not_necessary.py
+
+*.html
+*.txt
