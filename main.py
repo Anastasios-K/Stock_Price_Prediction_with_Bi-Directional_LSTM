@@ -1,22 +1,18 @@
-from src.preprocessing.collect_data import GetData
+from src.data_engineering.data_engineering import DataEngineering
+from src.config.load_conifg import Config
 
 
 class RunCryptoProject:
 
-    def __init__(self, data_path):
-        self.run = GetData(data_path=data_path)\
-            # .clean_data()
+    def __init__(self, config_path):
+        config = Config(config_path=config_path)
+        self.run = DataEngineering(config=config)\
+            .data_engineering
 
 
 if __name__ == "__main__":
 
-    DATA_PATH = "C:\\Users\\Anast\\pythonProject\\Crypto_Prise_Prediction\\data"
-    run = RunCryptoProject(data_path=DATA_PATH)
+    CONFIG_PATH = "C:\\Users\\Anast\\pythonProject\\Crypto_Prise_Prediction\\src\\config\\config.yaml"
+    a = RunCryptoProject(config_path=CONFIG_PATH)
 
 
-x = run.run.data
-x.iloc[3, :] = x.iloc[2, :]
-
-a = x.duplicated(subset="Date", keep=False).sum()
-
-zzz = x.drop_duplicates(subset="Date", keep="first")

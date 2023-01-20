@@ -1,0 +1,28 @@
+crypto_currencies: ["BTC", "ETH", "LTC", "ADA"]
+
+data_files_type: "csv"
+
+show_figures: "True"
+
+df_structure:
+  date: "Date"
+  name: "Name"
+  symbol: "Symbol"
+  close: "Close"
+  open: "Open"
+  high: "High"
+  low: "Low"
+  marketcap: "Marketcap"
+  serialID: "SNo"
+
+paths:
+  data_path: "C:\\Users\\Anast\\pythonProject\\Crypto_Prise_Prediction\\data"
+
+required_dirs:
+  reports: ["results", "reports"]
+  figures: ["results", "figures"]
+  models: ["results", "models"]
+  best_models: ["results", "best_models"]
+
+report_names:
+  engineering: "data_engineering_report.txt"
