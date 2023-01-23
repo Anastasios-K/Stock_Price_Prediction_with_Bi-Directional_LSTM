@@ -7,19 +7,21 @@ from typing import List
 
 class PlotData:
     def __init__(self,
-                 df,
-                 config):
+                 dataframe,
+                 config,
+                 specific_file_name: str = ""):
         self.config = config
-        self.df = df
+        self.df = dataframe
 
-        self.layout(df=df,
+        self.__layout(df=dataframe,
                       currencies=self.config.currencies.currencies,
                       attributes=[
                           self.config.dfstructure.open,
                           self.config.dfstructure.close,
                           self.config.dfstructure.high,
                           self.config.dfstructure.low
-                      ])
+                      ],
+                      specific_file_name = specific_file_name)
 
     @staticmethod
     def __fig(currencies: List,
@@ -53,7 +55,11 @@ class PlotData:
                 color_group += len(currencies)
         return fig
 
-    def layout(self, df, currencies, attributes):
+    def __layout(self,
+                 df,
+                 currencies,
+                 attributes,
+                 specific_file_name):
         fig = self.__traces(
             df=df,
             currencies=currencies,
@@ -83,7 +89,7 @@ class PlotData:
         )
         fig.write_html(os.path.join(
             *self.config.dirs2make.figures,
-            "Crypto_Currencies.html"
+            "Crypto_Currencies_" + specific_file_name + ".html"
         ))
         if bool(self.config.showfig.showfig):
             fig.show(renderer="browser")

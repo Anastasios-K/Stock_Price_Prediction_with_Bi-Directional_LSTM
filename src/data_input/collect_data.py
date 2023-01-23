@@ -1,29 +1,28 @@
 import os
 import pandas as pd
 import numpy as np
-from src.data_engineering.s2_handle_nan_values import HandleNanValues
 
 
 class GetData:
 
     def __init__(self,
                  config):
-        self.config = config
+        self.__config = config
         self.data = self.__create_final_dataframe(data_path=config.paths.datapath)
 
     def __read_csvs(self, data_path):
         data_list = [
             pd.read_csv(os.path.join(data_path, file))
             for file in os.listdir(data_path)
-            if file.endswith(self.config.datafiletype.datafiletype)
+            if file.endswith(self.__config.datafiletype.datafiletype)
         ]
         return data_list
 
     def __add_currency_name_in_column_names(self, df):
-        coin_name = df.loc[0, self.config.dfstructure.symbol]
+        coin_name = df.loc[0, self.__config.dfstructure.symbol]
         new_cols = [
             coin_name + "_" + col
-            if col != self.config.dfstructure.date
+            if col != self.__config.dfstructure.date
             else col
             for col in df.columns
         ]
@@ -32,9 +31,9 @@ class GetData:
 
     def __remove_unused_cols(self, df):
         unused_col_names = [
-            self.config.dfstructure.serialID,
-            self.config.dfstructure.name,
-            self.config.dfstructure.symbol
+            self.__config.dfstructure.serialID,
+            self.__config.dfstructure.name,
+            self.__config.dfstructure.symbol
         ]
         unused_cols = [
             [col for col in df.columns if name in col]
@@ -51,7 +50,7 @@ class GetData:
             new_df = pd.merge(
                 new_df,
                 df,
-                on=self.config.dfstructure.date
+                on=self.__config.dfstructure.date
             )
         return new_df
 
@@ -69,7 +68,3 @@ class GetData:
         ]
         final_df = self.__merge_multiple_dfs(df_list=data_list)
         return final_df
-
-    def handle_nan_values(self):
-        return HandleNanValues(dataframe=self.data,
-                               config=self.config)

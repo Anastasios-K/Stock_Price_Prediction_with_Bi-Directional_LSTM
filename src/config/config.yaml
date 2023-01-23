@@ -2,7 +2,7 @@ crypto_currencies: ["BTC", "ETH", "LTC", "ADA"]
 
 data_files_type: "csv"
 
-show_figures: "True"
+show_figures: "False"
 
 df_structure:
   date: "Date"
