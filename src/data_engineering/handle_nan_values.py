@@ -1,5 +1,5 @@
 from src.secondary_modules.save_report import SaveReport
-from src.data_engineering.s3_handle_duplicates import HandleDuplicates
+# from src.data_engineering.s3_handle_duplicates import HandleDuplicates
 
 
 class HandleNanValues:
@@ -48,8 +48,3 @@ class HandleNanValues:
         final_df = (fwd + bwd) / 2
         final_df.reset_index(inplace=True)
         return final_df
-
-    def handle_duplicates(self):
-        return HandleDuplicates(dataframe=self.df,
-                                config=self.config)
-

@@ -1,5 +1,5 @@
 from src.secondary_modules.save_report import SaveReport
-from src.data_engineering.s4_validate_data_types import FixDataType
+# from src.data_engineering.s4_validate_data_types import FixDataType
 
 
 class HandleDuplicates:
@@ -37,7 +37,3 @@ class HandleDuplicates:
             inplace=True
         )
         return df
-
-    def fix_data_types(self):
-        return FixDataType(dataframe=self.df,
-                           config=self.config)

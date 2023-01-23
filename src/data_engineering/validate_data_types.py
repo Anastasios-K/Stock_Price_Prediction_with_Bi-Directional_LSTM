@@ -1,9 +1,9 @@
 import pandas as pd
 from src.secondary_modules.save_report import SaveReport
-from src.data_engineering.s5_plot_data import PlotData
+from src.data_engineering.plot_data import PlotData
 
 
-class FixDataType:
+class HandleDataTypes:
 
     def __init__(self,
                  dataframe,
@@ -37,7 +37,3 @@ class FixDataType:
             path2save=self.config.dirs2make.reports
         )
         return df
-
-    def plot_data(self):
-        return PlotData(df=self.df,
-                        config=self.config)
