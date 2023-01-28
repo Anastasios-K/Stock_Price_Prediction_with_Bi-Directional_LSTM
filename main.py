@@ -12,8 +12,7 @@ class RunCryptoProject:
         CreateDirs(config=config)
         data = GetData(config=config).data
 
-        self.data_engineering = DataEngineering(dataframe=data,
-                                                config=config)
+        self.data_engineering = DataEngineering(dataframe=data, config=config)
         self.data_engineering.handle_nan_values()
         self.data_engineering.handle_duplicates()
         self.data_engineering.handle_data_types()
@@ -21,8 +20,8 @@ class RunCryptoProject:
         self.data_engineering.set_time_as_index()
         post_eng_df = self.data_engineering.dataframe
 
-        self.data_exploration = DataExploration(dataframe=post_eng_df,
-                                                config=config)
+        self.data_exploration = DataExploration(dataframe=post_eng_df, config=config)
+        self.data_exploration.calc_data_distribution()
         self.data_exploration.pd_profiling_eda(report_name="EDA_PDprofiling")
         self.data_exploration.calc_correlation(fig_title="correlation_analysis")
         self.data_exploration.calc_multi_shifted_correlations()
@@ -32,5 +31,6 @@ if __name__ == "__main__":
 
     CONFIG_PATH = "C:\\Users\\Anast\\pythonProject\\Crypto_Prise_Prediction\\src\\config\\config.yaml"
     a = RunCryptoProject(config_path=CONFIG_PATH)
+
 
 
