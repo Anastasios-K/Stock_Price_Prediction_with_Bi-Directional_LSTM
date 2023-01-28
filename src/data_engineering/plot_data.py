@@ -9,23 +9,27 @@ class PlotData:
     def __init__(self,
                  dataframe,
                  config,
-                 specific_file_name: str = ""):
+                 specific_file_name: str = ""
+                 ):
         self.config = config
         self.df = dataframe
 
-        self.__layout(df=dataframe,
-                      currencies=self.config.currencies.currencies,
-                      attributes=[
-                          self.config.dfstructure.open,
-                          self.config.dfstructure.close,
-                          self.config.dfstructure.high,
-                          self.config.dfstructure.low
-                      ],
-                      specific_file_name = specific_file_name)
+        self.__layout(
+            df=dataframe,
+            currencies=self.config.currencies.currencies,
+            attributes=[
+                self.config.dfstructure.open,
+                self.config.dfstructure.close,
+                self.config.dfstructure.high,
+                self.config.dfstructure.low
+            ],
+            specific_file_name=specific_file_name
+        )
 
     @staticmethod
     def __fig(currencies: List,
-              cols: int):
+              cols: int
+              ):
         rows = len(currencies)
         return mks(rows=rows,
                    cols=cols,
@@ -34,7 +38,8 @@ class PlotData:
     def __traces(self,
                  df,
                  attributes,
-                 currencies):
+                 currencies
+                 ):
         colours = mcolors.CSS4_COLORS
         fig = self.__fig(currencies=currencies, cols=1)
 
@@ -59,7 +64,8 @@ class PlotData:
                  df,
                  currencies,
                  attributes,
-                 specific_file_name):
+                 specific_file_name
+                 ):
         fig = self.__traces(
             df=df,
             currencies=currencies,
@@ -73,7 +79,7 @@ class PlotData:
                     family="Arial",
                     size=20
                 ),
-                text="Crypto Currencies",
+                text="Crypto Currencies " + specific_file_name,
                 x=0.5
             ),
         )
@@ -91,5 +97,3 @@ class PlotData:
             *self.config.dirs2make.figures,
             "Crypto_Currencies_" + specific_file_name + ".html"
         ))
-        if bool(self.config.showfig.showfig):
-            fig.show(renderer="browser")

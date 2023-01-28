@@ -1,12 +1,19 @@
 import os
-from typing import List
 
 
 class CreateDirs:
     def __init__(self,
-                 dirs2make: List):
-        self.__create_required_dirs(dirs2make=dirs2make)
+                 config):
+        self.__create_required_dirs(config=config)
 
     @staticmethod
-    def __create_required_dirs(dirs2make: List):
-        [os.mkdir(dirpath) for dirpath in dirs2make]
+    def __create_required_dirs(config):
+        dir_config = config.dirs2make
+        [
+            os.makedirs(
+                os.path.join(
+                    *dir_config.__dict__[key]
+                ), exist_ok=True
+            )
+            for key in dir_config.__dict__
+        ]

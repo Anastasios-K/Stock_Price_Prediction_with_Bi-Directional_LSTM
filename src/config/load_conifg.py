@@ -24,16 +24,6 @@ class FileType:
             datafiletype=obj["data_files_type"]
         )
 
-@dataclass
-class ShowFigs:
-    showfig: str
-
-    @classmethod
-    def read_config(cls: t.Type["ShowFigs"], obj: dict):
-        return cls(
-            showfig=obj["show_figures"]
-        )
-
 
 @dataclass
 class DfStructure:
@@ -86,7 +76,18 @@ class Dirs2Make:
             reports=obj["required_dirs"]["reports"],
             figures=obj["required_dirs"]["figures"],
             models=obj["required_dirs"]["models"],
-            best_models=obj["required_dirs"]["models"]
+            best_models=obj["required_dirs"]["best_models"]
+        )
+
+
+@dataclass
+class Feature2Shift:
+    feature2shift: str
+
+    @classmethod
+    def read_config(cls: t.Type["Feature2Shift"], obj: dict):
+        return cls(
+            feature2shift=obj["feature2shift"]
         )
 
 
@@ -97,7 +98,7 @@ class Config:
 
         self.currencies = Currencies.read_config(obj=config_file)
         self.datafiletype = FileType.read_config(obj=config_file)
-        self.showfig = ShowFigs.read_config(obj=config_file)
         self.dfstructure = DfStructure.read_config(obj=config_file)
         self.paths = Paths.read_config(obj=config_file)
         self.dirs2make = Dirs2Make.read_config(obj=config_file)
+        self.feature2shift = Feature2Shift.read_config(obj=config_file)

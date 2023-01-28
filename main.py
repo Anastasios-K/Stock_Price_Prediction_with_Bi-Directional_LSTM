@@ -1,25 +1,31 @@
 from src.config.load_conifg import Config
 from src.data_input.collect_data import GetData
 from src.data_engineering.data_engineering import DataEngineering
-
-# import pandas as pd
-# import os
-# import numpy as np
-# xxx = pd.read_csv(os.path.join("data", "coin_Bitcoin.csv"))
-# xxx.loc[xxx["Date"] == "2018-10-15 23:59:59", "High"] = np.nan
-# xxx.to_csv(os.path.join("data", "coin_Bitcoin.csv"), index_label=False)
+from src.data_exploration.data_exploration import DataExploration
+from src.secondary_modules.create_dirs import CreateDirs
 
 
 class RunCryptoProject:
 
     def __init__(self, config_path):
         config = Config(config_path=config_path)
+        CreateDirs(config=config)
         data = GetData(config=config).data
-        self.data_engineering = DataEngineering(dataframe=data, config=config)
+
+        self.data_engineering = DataEngineering(dataframe=data,
+                                                config=config)
         self.data_engineering.handle_nan_values()
         self.data_engineering.handle_duplicates()
         self.data_engineering.handle_data_types()
         self.data_engineering.plot_data()
+        self.data_engineering.set_time_as_index()
+        post_eng_df = self.data_engineering.dataframe
+
+        self.data_exploration = DataExploration(dataframe=post_eng_df,
+                                                config=config)
+        self.data_exploration.pd_profiling_eda(report_name="EDA_PDprofiling")
+        self.data_exploration.calc_correlation(fig_title="correlation_analysis")
+        self.data_exploration.calc_multi_shifted_correlations()
 
 
 if __name__ == "__main__":
