@@ -1,6 +1,5 @@
 import pandas as pd
 from src.secondary_modules.save_report import SaveReport
-from src.data_engineering.plot_data import PlotData
 
 
 class HandleDataTypes:
@@ -8,15 +7,22 @@ class HandleDataTypes:
     def __init__(self,
                  dataframe,
                  config,
-                 title: str = "Dtypes"):
-        self.config = config
+                 title: str = "Dtypes"
+                 ):
         self.df = self.__fix_data_types(
             df=dataframe,
-            title=title)
+            config=config,
+            title=title
+        )
 
-    def __fix_data_types(self, df, title):
+    @staticmethod
+    def __fix_data_types(df,
+                         config,
+                         title
+                         ):
+
         for col in df.columns:
-            if col == self.config.dfstructure.date:
+            if col == config.dfstructure.date:
                 df[col] = pd.to_datetime(df[col])
             else:
                 df[col] = pd.to_numeric(df[col])
@@ -34,6 +40,6 @@ class HandleDataTypes:
         SaveReport(
             data=reporting_list,
             title=title,
-            path2save=self.config.dirs2make.reports
+            path2save=config.dirs2make.reports
         )
         return df

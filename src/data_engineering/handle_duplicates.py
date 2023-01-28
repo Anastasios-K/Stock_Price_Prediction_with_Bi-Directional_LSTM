@@ -7,29 +7,40 @@ class HandleDuplicates:
     def __init__(self,
                  dataframe,
                  config,
-                 report_title: str = "Duplicates"):
-        self.config = config
-        self.df = self.__remove_duplicates(df=dataframe,
-                                           title=report_title)
+                 report_title: str = "Duplicates"
+                 ):
+        duplicates_quant = self.__count_duplicates(
+            df=dataframe,
+            config=config,
+            title=report_title
+        )
+        self.df = self.__remove_duplicates(
+            df=dataframe,
+            duplicates_quant=duplicates_quant
+        )
 
-    def __count_duplicates(self,
-                           df,
-                           title):
+    @staticmethod
+    def __count_duplicates(df,
+                           config,
+                           title
+                           ):
+        path2save = config.dirs2make.reports
         dupli_amount = df["Date"].duplicated(False).sum()
+
         SaveReport(
-            path2save=self.config.dirs2make.reports,
+            path2save=path2save,
             data=list(str(dupli_amount)),
             title=title
         )
         return dupli_amount
 
-    def __remove_duplicates(self,
-                            df,
-                            title):
-        dupli_amount = self.__count_duplicates(
-            df=df,
-            title=title
-        )
+    @staticmethod
+    def __remove_duplicates(df,
+                            duplicates_quant
+                            ):
+        duplicates_quant = duplicates_quant
+
+        # douplicate condition is missing - coming soon
 
         df.drop_duplicates(
             subset="Date",

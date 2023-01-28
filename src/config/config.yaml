@@ -2,8 +2,6 @@ crypto_currencies: ["BTC", "ETH", "LTC", "ADA"]
 
 data_files_type: "csv"
 
-show_figures: "False"
-
 df_structure:
   date: "Date"
   name: "Name"
@@ -26,3 +24,5 @@ required_dirs:
 
 report_names:
   engineering: "data_engineering_report.txt"
+
+feature2shift: "BTC_Close"
