@@ -1,6 +1,7 @@
 from src.data_exploration.eda_pd_profiling import ProfilingEDA
 from src.data_exploration.calc_correlation import CalcCorrel
 from src.data_exploration.correlation_with_delays import CorrShiftedFeature
+from src.data_exploration.plot_distribution import PlotDistributions
 
 
 class DataExploration:
@@ -18,6 +19,10 @@ class DataExploration:
                      config=self.__config,
                      report_name=report_name)
 
+    def calc_data_distribution(self):
+        PlotDistributions(dataframe=self.__dataframe,
+                          config=self.__config)
+
     def calc_correlation(self,
                          fig_title,
                          corr_method="pearson"
@@ -28,7 +33,8 @@ class DataExploration:
                    corr_method=corr_method)
 
     def calc_multi_shifted_correlations(self,
-                                        corr_method="pearson"):
+                                        corr_method="pearson"
+                                        ):
         CorrShiftedFeature(dataframe=self.__dataframe,
                            config=self.__config,
                            corr_method=corr_method)
