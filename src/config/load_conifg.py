@@ -91,6 +91,25 @@ class Feature2Shift:
         )
 
 
+@dataclass
+class PlotDefault:
+    title_color: str
+    title_font_style: str
+    title_font_size: int
+    axes_line_width: int
+    axes_line_color: str
+
+    @classmethod
+    def read_config(cls: t.Type["PlotDefault"], obj: dict):
+        return cls(
+            title_color=obj["plotting_default"]["title_color"],
+            title_font_style=obj["plotting_default"]["title_font_style"],
+            title_font_size=obj["plotting_default"]["title_font_size"],
+            axes_line_width=obj["plotting_default"]["axes_line_width"],
+            axes_line_color=obj["plotting_default"]["axes_line_color"],
+        )
+
+
 class Config:
 
     def __init__(self, config_path):
@@ -102,3 +121,4 @@ class Config:
         self.paths = Paths.read_config(obj=config_file)
         self.dirs2make = Dirs2Make.read_config(obj=config_file)
         self.feature2shift = Feature2Shift.read_config(obj=config_file)
+        self.plotdefault = PlotDefault.read_config(obj=config_file)

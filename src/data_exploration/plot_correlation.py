@@ -27,7 +27,8 @@ class CalcCorrel:
             colorscale=colorscale
         )
         layout = self.__create_layout(
-            fig_title=fig_title
+            fig_title=fig_title,
+            config=config
         )
         self.__create_fig(
             trace=trace,
@@ -55,13 +56,15 @@ class CalcCorrel:
         return heatmap_trace.trace
 
     @staticmethod
-    def __create_layout(fig_title):
+    def __create_layout(fig_title,
+                        config
+                        ):
         heatmap_layout = go.Layout(
             title=dict(
                 font=dict(
-                    color="#000000",
-                    family="Arial",
-                    size=20
+                    color=config.plotdefault.title_color,
+                    family=config.plotdefault.title_font_style,
+                    size=config.plotdefault.title_font_size
                 ),
                 text=fig_title,
                 x=0.5

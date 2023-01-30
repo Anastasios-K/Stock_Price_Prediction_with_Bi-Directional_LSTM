@@ -21,16 +21,19 @@ class RunCryptoProject:
         post_eng_df = self.data_engineering.dataframe
 
         self.data_exploration = DataExploration(dataframe=post_eng_df, config=config)
-        self.data_exploration.calc_data_distribution()
-        self.data_exploration.pd_profiling_eda(report_name="EDA_PDprofiling")
-        self.data_exploration.calc_correlation(fig_title="correlation_analysis")
-        self.data_exploration.calc_multi_shifted_correlations()
+        # self.data_exploration.calc_data_distribution()
+        # self.data_exploration.pd_profiling_eda(report_name="EDA_PDprofiling")
+        # self.data_exploration.calc_correlation(fig_title="correlation_analysis")
+        # self.data_exploration.calc_delayed_correlations()
+        self.data_exploration.calc_moving_avgs(fig_title="MovingAvgs")
 
 
 if __name__ == "__main__":
 
     CONFIG_PATH = "C:\\Users\\Anast\\pythonProject\\Crypto_Prise_Prediction\\src\\config\\config.yaml"
     a = RunCryptoProject(config_path=CONFIG_PATH)
+
+
 
 
 
