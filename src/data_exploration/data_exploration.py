@@ -1,8 +1,9 @@
 from src.data_exploration.eda_pd_profiling import ProfilingEDA
-from src.data_exploration.plot_correlation import CalcCorrel
-from src.data_exploration.plot_delayed_correlation import CorrShiftedFeature
+from src.data_exploration.plot_correlation import PlotCorrel
+from src.data_exploration.plot_delayed_correlation import PlotShiftedCorrel
 from src.data_exploration.plot_distribution import PlotDistributions
-from src.data_exploration.moving_averages import MovingAvg
+from src.data_exploration.plot_moving_averages import MovingAvg
+from src.data_exploration.plot_autocorrelation import PlotAutocorr
 
 
 class DataExploration:
@@ -22,37 +23,43 @@ class DataExploration:
             report_name=report_name
         )
 
-    def calc_data_distribution(self):
+    def plot_data_distribution(self):
         PlotDistributions(
             dataframe=self.__dataframe,
             config=self.__config
         )
 
-    def calc_correlation(self,
+    def plot_correlation(self,
                          fig_title,
                          corr_method="pearson"
                          ):
-        CalcCorrel(
+        PlotCorrel(
             dataframe=self.__dataframe,
             config=self.__config,
             fig_title=fig_title,
             corr_method=corr_method
         )
 
-    def calc_delayed_correlations(self,
+    def plot_shifted_correlations(self,
                                   corr_method="pearson"
                                   ):
-        CorrShiftedFeature(
+        PlotShiftedCorrel(
             dataframe=self.__dataframe,
             config=self.__config,
             corr_method=corr_method
         )
 
-    def calc_moving_avgs(self,
+    def plot_moving_avgs(self,
                          fig_title
                          ):
         MovingAvg(
             dataframe=self.__dataframe,
             config=self.__config,
             fig_title=fig_title
+        )
+
+    def plot_autocorrelations(self):
+        PlotAutocorr(
+            dataframe=self.__dataframe,
+            config=self.__config
         )

@@ -1,7 +1,7 @@
-from src.data_exploration.plot_correlation import CalcCorrel
+from src.data_exploration.plot_correlation import PlotCorrel
 
 
-class CorrShiftedFeature:
+class PlotShiftedCorrel:
 
     def __init__(self,
                  dataframe,
@@ -42,7 +42,7 @@ class CorrShiftedFeature:
             shifted_df = self.__create_shifted_feaure_df(config=config,
                                                          dataframe=dataframe,
                                                          shift_val=shift)
-            CalcCorrel(
+            PlotCorrel(
                 dataframe=shifted_df,
                 config=config,
                 fig_title=f"Shifted_Correlation_with_Delay_{shift}",
