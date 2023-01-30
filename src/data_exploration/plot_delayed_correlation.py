@@ -1,4 +1,4 @@
-from src.data_exploration.calc_correlation import CalcCorrel
+from src.data_exploration.plot_correlation import CalcCorrel
 
 
 class CorrShiftedFeature:

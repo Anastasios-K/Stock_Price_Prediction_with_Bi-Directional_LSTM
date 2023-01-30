@@ -26,3 +26,10 @@ report_names:
   engineering: "data_engineering_report.txt"
 
 feature2shift: "BTC_Close"
+
+plotting_default:
+  title_color: "#000000"
+  title_font_style: "Arial"
+  title_font_size: 20
+  axes_line_width: 2
+  axes_line_color: "#000000"
