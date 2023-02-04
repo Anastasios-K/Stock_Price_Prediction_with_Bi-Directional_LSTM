@@ -8,6 +8,8 @@ class HandleDuplicates:
                  config,
                  report_title: str = "Duplicates"
                  ):
+        dataframe[config.dfstructure.date] = dataframe.index
+
         self.__count_duplicates(
             df=dataframe,
             config=config,
@@ -24,7 +26,7 @@ class HandleDuplicates:
                            title
                            ):
         path2save = config.dirs2make.reports
-        dupli_amount = df["Date"].duplicated(False).sum()
+        dupli_amount = df[config.dfstructure.date].duplicated(False).sum()
 
         SaveReport(
             path2save=path2save,
@@ -34,16 +36,15 @@ class HandleDuplicates:
 
     @staticmethod
     def __remove_duplicates(df,
-                            config):
-        df.reset_index(inplace=True)
-
+                            config
+                            ):
         df.drop_duplicates(
             subset="Date",
             keep="first",
             inplace=True
         )
-        df.set_index(
-            config.dfstructure.date,
+        df.drop(
+            columns=[config.dfstructure.date],
             inplace=True
         )
         return df
