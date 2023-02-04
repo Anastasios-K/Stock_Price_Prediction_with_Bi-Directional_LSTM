@@ -1,26 +1,26 @@
-crypto_currencies: ["BTC", "ETH", "LTC", "ADA"]
-
-data_files_type: "csv"
+paths:
+  data_path: "data/TSCO.csv"
 
 df_structure:
   date: "Date"
-  name: "Name"
-  symbol: "Symbol"
   close: "Close"
   open: "Open"
   high: "High"
   low: "Low"
-  marketcap: "Marketcap"
-  serialID: "SNo"
-
-paths:
-  data_path: "C:\\Users\\Anast\\pythonProject\\Crypto_Prise_Prediction\\data"
+  adjclose: "Adj Close"
+  volume: "Volume"
 
 required_dirs:
   reports: ["results", "reports"]
   figures: ["results", "figures"]
   models: ["results", "models"]
   best_models: ["results", "best_models"]
+
+data_engineering:
+  fill_method: "polynomial"  # polynomial or linear
+  poly_order: 2
+
+data_files_type: "csv"
 
 report_names:
   engineering: "data_engineering_report.txt"

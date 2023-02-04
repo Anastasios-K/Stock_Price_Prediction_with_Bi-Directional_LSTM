@@ -27,6 +27,11 @@ class HandleDataTypes:
             else:
                 df[col] = pd.to_numeric(df[col])
 
+        df.set_index(
+            config.dfstructure.date,
+            inplace=True
+        )
+
         # prepare list for reporting
         types = df.dtypes
         attributes = list(types.index)

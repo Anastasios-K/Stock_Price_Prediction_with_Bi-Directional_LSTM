@@ -1,8 +1,8 @@
 venv
-data
 .idea
+backup
+__pycache__
+private_data
 
 *.html
 *.txt
-
-__pycache__

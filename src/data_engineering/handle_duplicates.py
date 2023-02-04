@@ -1,5 +1,4 @@
 from src.secondary_modules.save_report import SaveReport
-# from src.data_engineering.s4_validate_data_types import FixDataType
 
 
 class HandleDuplicates:
@@ -9,14 +8,14 @@ class HandleDuplicates:
                  config,
                  report_title: str = "Duplicates"
                  ):
-        duplicates_quant = self.__count_duplicates(
+        self.__count_duplicates(
             df=dataframe,
             config=config,
             title=report_title
         )
         self.df = self.__remove_duplicates(
             df=dataframe,
-            duplicates_quant=duplicates_quant
+            config=config
         )
 
     @staticmethod
@@ -32,19 +31,19 @@ class HandleDuplicates:
             data=list(str(dupli_amount)),
             title=title
         )
-        return dupli_amount
 
     @staticmethod
     def __remove_duplicates(df,
-                            duplicates_quant
-                            ):
-        duplicates_quant = duplicates_quant
-
-        # douplicate condition is missing - coming soon
+                            config):
+        df.reset_index(inplace=True)
 
         df.drop_duplicates(
             subset="Date",
             keep="first",
+            inplace=True
+        )
+        df.set_index(
+            config.dfstructure.date,
             inplace=True
         )
         return df
