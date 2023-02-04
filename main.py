@@ -1,5 +1,5 @@
 from src.config.load_conifg import Config
-from src.data_input.collect_data import GetData
+from src.data_input.collect_stock_data import GetData
 from src.data_engineering.data_engineering import DataEngineering
 from src.data_exploration.data_exploration import DataExploration
 from src.secondary_modules.create_dirs import CreateDirs
@@ -13,12 +13,13 @@ class RunCryptoProject:
         data = GetData(config=config).data
 
         self.data_engineering = DataEngineering(dataframe=data, config=config)
+        self.data_engineering.handle_data_types()
         self.data_engineering.handle_nan_values()
         self.data_engineering.handle_duplicates()
-        self.data_engineering.handle_data_types()
-        self.data_engineering.plot_data()
-        self.data_engineering.set_time_as_index()
-        post_eng_df = self.data_engineering.dataframe
+        self.data_engineering.plot_diff_df_resolutions(fig_title="Ola kala")
+        # self.data_engineering.plot_data()
+        # self.data_engineering.set_time_as_index()
+        # post_eng_df = self.data_engineering.dataframe
 
         # self.data_exploration = DataExploration(dataframe=post_eng_df, config=config)
         # self.data_exploration.plot_data_distribution()
@@ -33,5 +34,7 @@ if __name__ == "__main__":
 
     CONFIG_PATH = "C:\\Users\\Anast\\pythonProject\\Crypto_Prise_Prediction\\src\\config\\config.yaml"
     a = RunCryptoProject(config_path=CONFIG_PATH)
+
+
 
 
