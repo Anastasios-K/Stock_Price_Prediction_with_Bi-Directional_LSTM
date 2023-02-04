@@ -20,7 +20,7 @@ class PlotDistributions:
 
     @staticmethod
     def __calc_subplot_rows_cols(dataframe):
-        subplot_cols = 6
+        subplot_cols = 3
         subplot_rows = ceil(len(dataframe.columns) / subplot_cols)
         return subplot_cols, subplot_rows
 

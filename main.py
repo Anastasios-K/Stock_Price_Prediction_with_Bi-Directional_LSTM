@@ -16,10 +16,8 @@ class RunCryptoProject:
         self.data_engineering.handle_data_types()
         self.data_engineering.handle_nan_values()
         self.data_engineering.handle_duplicates()
-        self.data_engineering.plot_diff_df_resolutions(fig_title="Ola kala")
-        # self.data_engineering.plot_data()
-        # self.data_engineering.set_time_as_index()
-        # post_eng_df = self.data_engineering.dataframe
+        self.data_engineering.plot_diff_df_resolutions(fig_title="Tesco_Stock_Prices")
+        self.post_eng_df = self.data_engineering.dataframe
 
         # self.data_exploration = DataExploration(dataframe=post_eng_df, config=config)
         # self.data_exploration.plot_data_distribution()
@@ -36,5 +34,12 @@ if __name__ == "__main__":
     a = RunCryptoProject(config_path=CONFIG_PATH)
 
 
-
-
+    # df = a.post_eng_df
+    # df["Date"] = df.index
+    #
+    # df.drop_duplicates(
+    #     subset="Date",
+    #     keep="first",
+    #     inplace=True
+    # )
+    # df.drop(columns=["Date"], inplace=True)
