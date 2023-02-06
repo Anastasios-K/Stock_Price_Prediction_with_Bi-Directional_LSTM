@@ -1,19 +1,23 @@
+import pandas as pd
+
+
 class SMA:
     """ Simple Moving Average """
 
     def __init__(self,
-                 close_price,
-                 rolling_window: int = 30
+                 dataframe: pd.DataFrame,
+                 config,
                  ):
 
         self.sma = self.__simple_movinge_avg(
-            close_price=close_price,
-            rolling_window=rolling_window
+            df=dataframe,
+            config=config,
         )
 
     @staticmethod
-    def __simple_movinge_avg(close_price,
-                             rolling_window
+    def __simple_movinge_avg(df,
+                             config,
                              ):
-        sma = close_price.rolling(rolling_window).mean()
+        rolling_window = config.techanal.smawindow
+        sma = df[config.dfstructure.close].rolling(rolling_window).mean()
         return sma

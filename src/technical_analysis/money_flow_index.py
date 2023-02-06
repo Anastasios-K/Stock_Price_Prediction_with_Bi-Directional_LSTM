@@ -7,33 +7,27 @@ class MFI:
     """ Money Flow Index """
 
     def __init__(self,
-                 close_price,
-                 high_price,
-                 low_price,
-                 volume,
-                 rolling_window
+                 dataframe,
+                 config,
                  ):
         self.__typical_price = TP(
-            close_price=close_price,
-            high_price=high_price,
-            low_price=low_price
+            dataframe=dataframe,
+            config=config
         ).typical_price
 
         self.__money_flow = MF(
-            close_price=close_price,
-            high_price=high_price,
-            low_price=low_price,
-            volume=volume
+            dataframe=dataframe,
+            config=config
         ).money_flow
 
         tps = self.__calc_diff_tp_and_shifted_tp()
         tps = self.__calc_pos_n_neg_mf_periods(
             tps=tps,
-            rolling_window=rolling_window
+            config=config,
         )
         tps = self.__calc_money_flow_ratio(tps=tps)
 
-        self.__money_flow_index = self.__calc_money_flow_index(tps=tps)
+        self.mfi = self.__calc_money_flow_index(tps=tps)
 
     def __calc_diff_tp_and_shifted_tp(self):
         """ Calculate difference between typical price and typical price shifted by 1 """
@@ -49,9 +43,11 @@ class MFI:
 
     def __calc_pos_n_neg_mf_periods(self,
                                     tps,
-                                    rolling_window
+                                    config
                                     ):
         """ Calculate positive and negative periodic money flow """
+        rolling_window = config.techanal.mfperiodwindow
+
         money_flow = self.__money_flow
         # initiate positive and negative money flow features
         tps["money_flow_negative"] = money_flow

@@ -1,3 +1,4 @@
+import pandas as pd
 from src.technical_analysis.exponential_moving_avg import EMA
 
 
@@ -5,29 +6,30 @@ class MACD:
     """ Moving Average Convergence Divergence """
 
     def __init__(self,
-                 close_price,
-                 rolling_window_short=12,
-                 rolling_window_long=26
+                 dataframe: pd.DataFrame,
+                 config
                  ):
 
         self.macd = self.__moving_avg_convergence_divergence(
-            close_price=close_price,
-            rolling_window_short=rolling_window_short,
-            rolling_window_long=rolling_window_long
+            df=dataframe,
+            config=config
         )
 
     @staticmethod
-    def __moving_avg_convergence_divergence(close_price,
-                                            rolling_window_short,
-                                            rolling_window_long
+    def __moving_avg_convergence_divergence(df,
+                                            config,
                                             ):
         ema_short = EMA(
-            close_price=close_price,
-            rolling_window=rolling_window_short
+            dataframe=df,
+            config=config,
+            rolling_window=config.techanal.macdshortwindow
         ).ema
+
         ema_long = EMA(
-            close_price=close_price,
-            rolling_window=rolling_window_long
+            dataframe=df,
+            config=config,
+            rolling_window=config.techanal.macdlongwindow
         ).ema
+
         macd = ema_short - ema_long
         return macd

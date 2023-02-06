@@ -68,6 +68,27 @@ class DataEngin:
 
 
 @dataclass
+class TechAnal:
+    smawindow: int
+    emawindow: int
+    mfperiodwindow: int
+    macdshortwindow: int
+    macdlongwindow: int
+    signalwindow: int
+
+    @classmethod
+    def read_config(cls: t.Type["TechAnal"], obj: dict):
+        return cls(
+            smawindow=obj["technical_analysis"]["moving_avg_window"],
+            emawindow=obj["technical_analysis"]["exp_moving_avg_window"],
+            mfperiodwindow=obj["technical_analysis"]["money_flow_periods_window"],
+            macdshortwindow=obj["technical_analysis"]["macd_short_window"],
+            macdlongwindow=obj["technical_analysis"]["macd_long_window"],
+            signalwindow=obj["technical_analysis"]["signal_window"]
+        )
+
+
+@dataclass
 class FileType:
     datafiletype: str
 
@@ -117,6 +138,7 @@ class Config:
         self.dfstructure = DfStructure.read_config(obj=config_file)
         self.dirs2make = Dirs2Make.read_config(obj=config_file)
         self.dataengin = DataEngin.read_config(obj=config_file)
+        self.techanal = TechAnal.read_config(obj=config_file)
 
         self.feature2shift = Feature2Shift.read_config(obj=config_file)
         self.plotdefault = PlotDefault.read_config(obj=config_file)

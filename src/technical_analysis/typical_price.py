@@ -1,25 +1,26 @@
+import pandas as pd
+
+
 class TP:
     """ Typical Price """
 
     def __init__(self,
-                 close_price,
-                 high_price,
-                 low_price
+                 dataframe: pd.DataFrame,
+                 config
                  ):
         self.typical_price = self.__typical_price(
-            close_price=close_price,
-            high_price=high_price,
-            low_price=low_price
+            df=dataframe,
+            config=config
         )
 
     @staticmethod
-    def __typical_price(close_price,
-                        high_price,
-                        low_price
+    def __typical_price(df,
+                        config
                         ):
         typical_price = (
-                                close_price +
-                                high_price +
-                                low_price
-                        ) / 3
+                df[config.dfstructure.close] +
+                df[config.dfstructure.high] +
+                df[config.dfstructure.low]
+        ) / 3
+
         return typical_price
