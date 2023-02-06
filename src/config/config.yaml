@@ -20,6 +20,15 @@ data_engineering:
   fill_method: "polynomial"  # polynomial or linear
   poly_order: 2
 
+technical_analysis:
+  moving_avg_window: 10
+  exp_moving_avg_window: 10
+  money_flow_periods_window: 14
+  macd_short_window: 12
+  macd_long_window: 26
+  signal_window: 9
+
+
 data_files_type: "csv"
 
 report_names:

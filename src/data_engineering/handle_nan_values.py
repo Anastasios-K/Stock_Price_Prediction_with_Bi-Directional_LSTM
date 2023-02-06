@@ -1,4 +1,6 @@
+import pandas as pd
 from src.secondary_modules.save_report import SaveReport
+from src.data_engineering.handle_data_types import HandleDataTypes
 
 
 class HandleNanValues:
@@ -8,29 +10,34 @@ class HandleNanValues:
     """
 
     def __init__(self,
-                 dataframe,
+                 row_data: pd.DataFrame,
                  config,
                  report_title: str = "Nan Values"
                  ):
+        cooked_data = HandleDataTypes(
+            row_data=row_data,
+            config=config
+        ).cooked_data
+
         self.__count_nan_values(
-            df=dataframe,
+            cooked_data=cooked_data,
             config=config,
             title=report_title
         )
-        self.df = self.__replace_nan(
-            df=dataframe,
+        self.cooked_data = self.__replace_nan(
+            cooked_data=cooked_data,
             config=config,
         )
 
     @staticmethod
-    def __count_nan_values(df,
+    def __count_nan_values(cooked_data: pd.DataFrame,
                            config,
                            title):
         path2save = config.dirs2make.reports
         nan_amount = [
-            f"{col}: {df[col].isna().sum()}"
+            f"{col}: {cooked_data[col].isna().sum()}"
             for col
-            in df.columns
+            in cooked_data.columns
         ]
         SaveReport(
             path2save=path2save,
@@ -39,35 +46,34 @@ class HandleNanValues:
         )
 
     @staticmethod
-    def __replace_nan(df,
+    def __replace_nan(cooked_data: pd.DataFrame,
                       config
                       ):
 
         if config.dataengin.fill_method == "polynomial":
             [
-                df[col].interpolate(
+                cooked_data[col].interpolate(
                     method=config.dataengin.fill_method,
                     order=config.dataengin.poly_order,
                     direction="both",
                     inplace=True
                 )
                 for col
-                in df.columns
+                in cooked_data.columns
             ]
 
         elif config.dataengin.fill_method == "linear":
             [
-                df[col].interpolate(
+                cooked_data[col].interpolate(
                     method=config.dataengin.fill_method,
                     direction="both",
                     inplace=True
                 )
                 for col
-                in df.columns
+                in cooked_data.columns
             ]
 
         else:
             raise ValueError("An invalid fill method is given.")
 
-        df.reset_index(inplace=True)
-        return df
+        return cooked_data

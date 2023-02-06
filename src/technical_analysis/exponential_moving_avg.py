@@ -1,22 +1,32 @@
+import numpy as np
+import pandas as pd
+
+
 class EMA:
     """ Exponential Moving Average """
 
     def __init__(self,
-                 close_price,
-                 rolling_window: int = 12
+                 dataframe: pd.DataFrame,
+                 config,
+                 rolling_window
                  ):
 
         self.ema = self.__exponential_moving_avg(
-            price=close_price,
+            df=dataframe,
+            config=config,
             rolling_window=rolling_window
         )
 
     @staticmethod
-    def __exponential_moving_avg(price,
+    def __exponential_moving_avg(df,
+                                 config,
                                  rolling_window
                                  ):
-        ema = price.ewm(
+        temp_df = df.copy()
+        temp_df.loc[:rolling_window, config.dfstructure.close] = np.nan
+        temp_df["ema"] = temp_df[config.dfstructure.close].ewm(
             span=rolling_window,
             adjust=False
         ).mean()
+        ema = temp_df["ema"]
         return ema

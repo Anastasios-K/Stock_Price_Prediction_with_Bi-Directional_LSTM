@@ -1,32 +1,38 @@
+import pandas as pd
 from src.secondary_modules.save_report import SaveReport
+from src.data_engineering.handle_data_types import HandleDataTypes
 
 
 class HandleDuplicates:
 
     def __init__(self,
-                 dataframe,
+                 row_data: pd.DataFrame,
                  config,
                  report_title: str = "Duplicates"
                  ):
-        dataframe[config.dfstructure.date] = dataframe.index
+        cooked_data = HandleDataTypes(
+            row_data=row_data,
+            config=config
+        ).cooked_data
+        cooked_data[config.dfstructure.date] = cooked_data.index
 
         self.__count_duplicates(
-            df=dataframe,
+            cooked_data=cooked_data,
             config=config,
             title=report_title
         )
-        self.df = self.__remove_duplicates(
-            df=dataframe,
+        self.cooked_data = self.__remove_duplicates(
+            cooked_data=cooked_data,
             config=config
         )
 
     @staticmethod
-    def __count_duplicates(df,
+    def __count_duplicates(cooked_data: pd.DataFrame,
                            config,
                            title
                            ):
         path2save = config.dirs2make.reports
-        dupli_amount = df[config.dfstructure.date].duplicated(False).sum()
+        dupli_amount = cooked_data[config.dfstructure.date].duplicated(False).sum()
 
         SaveReport(
             path2save=path2save,
@@ -35,16 +41,16 @@ class HandleDuplicates:
         )
 
     @staticmethod
-    def __remove_duplicates(df,
+    def __remove_duplicates(cooked_data: pd.DataFrame,
                             config
                             ):
-        df.drop_duplicates(
+        cooked_data.drop_duplicates(
             subset="Date",
             keep="first",
             inplace=True
         )
-        df.drop(
+        cooked_data.drop(
             columns=[config.dfstructure.date],
             inplace=True
         )
-        return df
+        return cooked_data

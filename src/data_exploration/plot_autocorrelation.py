@@ -28,7 +28,7 @@ class PlotAutocorr:
                    lags
                    ):
         fig = tsaplots.plot_acf(
-            dataframe["BTC_Close"],
+            dataframe[config.dfstructure.close],
             lags=lags,
             fft=True
         )
@@ -45,11 +45,11 @@ class PlotAutocorr:
                     lags
                     ):
         fig = tsaplots.plot_pacf(
-            dataframe["BTC_Close"],
+            dataframe[config.dfstructure.close],
             lags=lags,
             method="ols"
         )
-        plt.title("Partial Autocorrelation")
+        plt.title("Partial_Autocorrelation")
         fig.savefig(os.path.join(
             *config.dirs2make.figures,
             "Partial_Autocorrelation" ".png"

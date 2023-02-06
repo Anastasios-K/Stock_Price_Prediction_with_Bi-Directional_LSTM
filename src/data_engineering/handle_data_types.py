@@ -5,35 +5,36 @@ from src.secondary_modules.save_report import SaveReport
 class HandleDataTypes:
 
     def __init__(self,
-                 dataframe,
+                 row_data: pd.DataFrame,
                  config,
                  title: str = "Dtypes"
                  ):
-        self.df = self.__fix_data_types(
-            df=dataframe,
+        self.cooked_data = self.__fix_data_types(
+            row_data=row_data,
             config=config,
             title=title
         )
 
     @staticmethod
-    def __fix_data_types(df,
+    def __fix_data_types(row_data,
                          config,
                          title
                          ):
 
-        for col in df.columns:
+        for col in row_data.columns:
             if col == config.dfstructure.date:
-                df[col] = pd.to_datetime(df[col])
-            else:
-                df[col] = pd.to_numeric(df[col])
+                row_data[col] = pd.to_datetime(row_data[col])
 
-        df.set_index(
-            config.dfstructure.date,
-            inplace=True
-        )
+                row_data.set_index(
+                    config.dfstructure.date,
+                    inplace=True
+                )
+
+            else:
+                row_data[col] = pd.to_numeric(row_data[col])
 
         # prepare list for reporting
-        types = df.dtypes
+        types = row_data.dtypes
         attributes = list(types.index)
         types = list(types)
 
@@ -47,4 +48,5 @@ class HandleDataTypes:
             title=title,
             path2save=config.dirs2make.reports
         )
-        return df
+        cooked_data = row_data
+        return cooked_data

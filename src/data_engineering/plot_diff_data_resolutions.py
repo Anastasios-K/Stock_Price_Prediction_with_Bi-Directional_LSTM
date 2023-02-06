@@ -1,52 +1,58 @@
 from src.plotly_plots.scatter_plot import ScatterTrace
 import plotly.graph_objects as go
 import os
+import pandas as pd
+from src.data_engineering.handle_data_types import HandleDataTypes
 
 
 class DataResolution:
 
     def __init__(self,
-                 dataframe,
+                 row_data: pd.DataFrame,
                  config,
                  fig_title
                  ):
+        dataframe = HandleDataTypes(
+            row_data=row_data,
+            config=config
+        ).cooked_data
 
-        self.df = self.__plot_moving_avgs(
-            dataframe=dataframe,
+        self.cooked_data = self.__plot_moving_avgs(
+            cooked_data=dataframe,
             config=config,
             title=fig_title
         )
 
     @staticmethod
-    def __calc_weekly_resolution(dataframe):
-        return dataframe.resample('W').mean()
+    def __calc_weekly_resolution(cooked_data):
+        return cooked_data.resample('W').mean()
 
     @staticmethod
-    def __calc_monthly_resolution(dataframe):
-        return dataframe.resample('M').mean()
+    def __calc_monthly_resolution(cooked_data):
+        return cooked_data.resample('M').mean()
 
     @staticmethod
-    def __calc_seasonal_resolution(dataframe):
-        return dataframe.resample('3M').mean()
+    def __calc_seasonal_resolution(cooked_data):
+        return cooked_data.resample('3M').mean()
 
     @staticmethod
-    def __calc_quarter_resolution(dataframe):
-        return dataframe.resample('Q').mean()
+    def __calc_quarter_resolution(cooked_data):
+        return cooked_data.resample('Q').mean()
 
     @staticmethod
-    def __calc_yearly_resolution(dataframe):
-        return dataframe.resample('Y').mean()
+    def __calc_yearly_resolution(cooked_data):
+        return cooked_data.resample('Y').mean()
 
     def __plot_moving_avgs(self,
-                           dataframe,
+                           cooked_data: pd.DataFrame,
                            config,
                            title
                            ):
-        weeek = self.__calc_weekly_resolution(dataframe=dataframe)
-        month = self.__calc_monthly_resolution(dataframe=dataframe)
-        season = self.__calc_seasonal_resolution(dataframe=dataframe)
-        quarter = self.__calc_quarter_resolution(dataframe=dataframe)
-        year = self.__calc_yearly_resolution(dataframe=dataframe)
+        weeek = self.__calc_weekly_resolution(cooked_data=cooked_data)
+        month = self.__calc_monthly_resolution(cooked_data=cooked_data)
+        season = self.__calc_seasonal_resolution(cooked_data=cooked_data)
+        quarter = self.__calc_quarter_resolution(cooked_data=cooked_data)
+        year = self.__calc_yearly_resolution(cooked_data=cooked_data)
 
         week_trace = ScatterTrace(
             xdata=weeek.index,
@@ -126,4 +132,4 @@ class DataResolution:
             title + ".html"
         ))
 
-        return dataframe
+        return cooked_data

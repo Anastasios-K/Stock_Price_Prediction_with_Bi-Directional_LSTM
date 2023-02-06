@@ -1,32 +1,26 @@
+import pandas as pd
 from src.technical_analysis.typical_price import TP
 
 
 class MF:
     """ Money Flow """
     def __init__(self,
-                 close_price,
-                 high_price,
-                 low_price,
-                 volume
+                 dataframe: pd.DataFrame,
+                 config
                  ):
         self.money_flow = self.__money_flow(
-            close_price=close_price,
-            high_price=high_price,
-            low_price=low_price,
-            volume=volume
+            df=dataframe,
+            config=config,
         )
 
     @staticmethod
-    def __money_flow(close_price,
-                     high_price,
-                     low_price,
-                     volume
+    def __money_flow(df,
+                     config,
                      ):
         typical_price = TP(
-            close_price=close_price,
-            high_price=high_price,
-            low_price=low_price
+            dataframe=df,
+            config=config
         ).typical_price
 
-        money_flow = typical_price * volume
+        money_flow = typical_price * df[config.dfstructure.volume]
         return money_flow
