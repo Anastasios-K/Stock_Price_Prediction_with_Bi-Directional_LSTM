@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 import typing as t
 from src.secondary_modules.read_yaml import YamlReader
 
@@ -36,6 +37,17 @@ class DfStructure:
             adjclose=obj["df_structure"]["adjclose"],
             volume=obj["df_structure"]["volume"],
             labels=obj["df_structure"]["labels"]
+        )
+
+
+@dataclass
+class FeaturesInUse:
+    features: List
+
+    @classmethod
+    def read_config(cls: t.Type["FeaturesInUse"], obj: dict):
+        return cls(
+            features=obj["features_in_use"]
         )
 
 
@@ -157,6 +169,7 @@ class Config:
 
         self.paths = Paths.read_config(obj=config_file)
         self.dfstructure = DfStructure.read_config(obj=config_file)
+        self.featuresinuse = FeaturesInUse.read_config(obj=config_file)
         self.dirs2make = Dirs2Make.read_config(obj=config_file)
         self.dataengin = DataEngin.read_config(obj=config_file)
         self.techanal = TechAnal.read_config(obj=config_file)

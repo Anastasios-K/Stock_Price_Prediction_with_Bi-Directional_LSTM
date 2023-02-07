@@ -11,6 +11,8 @@ df_structure:
   volume: "Volume"
   labels: "Labels"
 
+features_in_use: ["Date", "Close", "Open", "High", "Low", "MACD", "MFI"]
+
 required_dirs:
   reports: ["results", "reports"]
   figures: ["results", "figures"]
@@ -34,6 +36,9 @@ technical_analysis:
   signal_window: 9
 
 label_tollerance: 0.01
+
+
+
 
 
 data_files_type: "csv"

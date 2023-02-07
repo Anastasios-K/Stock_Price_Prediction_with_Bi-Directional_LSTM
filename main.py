@@ -3,6 +3,7 @@ from src.data_access.get_data import DataGetter
 from src.data_ready_for_analysis.data_ready4analysis import DataReady4Analysis
 from src.data_exploration.data_exploration import DataExploration
 from src.secondary_modules.create_dirs import CreateDirs
+from src.model_data_preparation.create_labels import LabelsCreator
 
 
 class RunStockPredictionProject:
@@ -23,9 +24,14 @@ class RunStockPredictionProject:
 
         self.data_exploration = DataExploration(data_ready4analysis=self.technical_analysis)
         self.data_exploration.plot_data_distribution()
-        self.data_exploration.pd_profiling_eda(report_name="EDA_PDprofiling")
+        # self.data_exploration.pd_profiling_eda(report_name="EDA_PDprofiling")
         self.data_exploration.plot_correlation(fig_title="correlation_analysis")
         self.data_exploration.plot_autocorrelations()
+
+        self.prep_data_modelling = LabelsCreator(data_ready4analysis=self.technical_analysis)\
+            .drop_nan_rows()\
+            .drop_unused_features()\
+            .split_data()
 
 
 if __name__ == "__main__":
