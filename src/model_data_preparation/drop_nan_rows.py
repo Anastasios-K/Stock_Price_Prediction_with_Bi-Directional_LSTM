@@ -1,8 +1,9 @@
 import pandas as pd
 from src.model_data_preparation.split_train_test_data import SplitData
+from src.model_data_preparation.drop_unsused_features import FeaturesInUse
 
 
-class DropRows:
+class FullRows:
 
     def __init__(self,
                  data: pd.DataFrame,
@@ -16,6 +17,6 @@ class DropRows:
         data.dropna(inplace=True)
         return data
 
-    def split_data(self):
-        return SplitData(data=self.data,
-                         config=self.config)
+    def drop_unused_features(self):
+        return FeaturesInUse(data=self.data,
+                             config=self.config)

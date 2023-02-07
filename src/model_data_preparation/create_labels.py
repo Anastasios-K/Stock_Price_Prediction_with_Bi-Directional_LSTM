@@ -1,13 +1,24 @@
-from src.model_data_preparation.drop_nan_rows import DropRows
+from src.model_data_preparation.drop_nan_rows import FullRows
+from src.abstract.DataReady4AnalysisAbstract import DataReady4AnalysisAbstract
 
 
-class CreateLabels:
+class LabelsCreator:
 
     def __init__(self,
-                 data,
-                 config
+                 data_ready4analysis: DataReady4AnalysisAbstract
                  ):
         diff_col = "Diff"
+        data = data_ready4analysis.data
+        config = data_ready4analysis.config
+
+        if (
+                config.dataengin.no_nans and
+                config.dataengin.no_dupl
+        ) in data_ready4analysis._status:
+            pass
+        else:
+            raise Exception("You have to run both handle_nan_values and handle_duplicates processes")
+
         data_with_diff = self.__calc_price_difference(
             data=data,
             config=config,
@@ -53,5 +64,5 @@ class CreateLabels:
         return data_with_diff
 
     def drop_nan_rows(self):
-        return DropRows(data=self.data,
+        return FullRows(data=self.data,
                         config=self.config)
