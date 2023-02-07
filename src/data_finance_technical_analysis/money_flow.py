@@ -1,5 +1,5 @@
 import pandas as pd
-from src.technical_analysis.typical_price import TP
+from src.data_finance_technical_analysis.typical_price import TP
 
 
 class MF:

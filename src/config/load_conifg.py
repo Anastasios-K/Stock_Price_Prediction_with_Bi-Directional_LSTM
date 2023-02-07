@@ -23,6 +23,7 @@ class DfStructure:
     low: str
     adjclose: str
     volume: str
+    labels: str
 
     @classmethod
     def read_config(cls: t.Type["DfStructure"], obj: dict):
@@ -33,7 +34,8 @@ class DfStructure:
             high=obj["df_structure"]["high"],
             low=obj["df_structure"]["low"],
             adjclose=obj["df_structure"]["adjclose"],
-            volume=obj["df_structure"]["volume"]
+            volume=obj["df_structure"]["volume"],
+            labels=obj["df_structure"]["labels"]
         )
 
 
@@ -58,12 +60,18 @@ class Dirs2Make:
 class DataEngin:
     fill_method: str
     poly_order: int
+    no_nans: str
+    no_dupl: str
+    no_zero: str
 
     @classmethod
     def read_config(cls: t.Type["DataEngin"], obj: dict):
         return cls(
             fill_method=obj["data_engineering"]["fill_method"],
-            poly_order=obj["data_engineering"]["poly_order"]
+            poly_order=obj["data_engineering"]["poly_order"],
+            no_nans=obj["data_engineering"]["forced_functions"]["no_nans"],
+            no_dupl=obj["data_engineering"]["forced_functions"]["no_dupl"],
+            no_zero=obj["data_engineering"]["forced_functions"]["no_zero"]
         )
 
 
@@ -86,6 +94,19 @@ class TechAnal:
             macdlongwindow=obj["technical_analysis"]["macd_long_window"],
             signalwindow=obj["technical_analysis"]["signal_window"]
         )
+
+
+@dataclass
+class LabelTollerance:
+    tollerance: int
+
+    @classmethod
+    def read_config(cls: t.Type["LabelTollerance"], obj: dict):
+        return cls(
+            tollerance=obj["label_tollerance"]
+        )
+
+
 
 
 @dataclass
@@ -139,6 +160,7 @@ class Config:
         self.dirs2make = Dirs2Make.read_config(obj=config_file)
         self.dataengin = DataEngin.read_config(obj=config_file)
         self.techanal = TechAnal.read_config(obj=config_file)
+        self.labeltollerance = LabelTollerance.read_config(obj=config_file)
 
         self.feature2shift = Feature2Shift.read_config(obj=config_file)
         self.plotdefault = PlotDefault.read_config(obj=config_file)

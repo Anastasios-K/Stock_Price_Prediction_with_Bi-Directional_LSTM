@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from statsmodels.graphics import tsaplots
 
 
-class PlotAutocorr:
+class AutocorrPlot:
 
     def __init__(self,
                  dataframe,

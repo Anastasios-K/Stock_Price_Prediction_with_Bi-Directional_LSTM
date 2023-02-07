@@ -1,5 +1,5 @@
 import pandas as pd
-from src.technical_analysis.exponential_moving_avg import EMA
+from src.data_finance_technical_analysis.exponential_moving_avg import EMA
 
 
 class MACD:

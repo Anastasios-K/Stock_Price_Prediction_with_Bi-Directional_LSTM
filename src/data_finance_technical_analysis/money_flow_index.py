@@ -1,5 +1,5 @@
-from src.technical_analysis.money_flow import MF
-from src.technical_analysis.typical_price import TP
+from src.data_finance_technical_analysis.money_flow import MF
+from src.data_finance_technical_analysis.typical_price import TP
 import pandas as pd
 
 
