@@ -1,4 +1,4 @@
-from src.technical_analysis.moving_avg_convergence_divergence import MACD
+from src.data_finance_technical_analysis.moving_avg_convergence_divergence import MACD
 import pandas as pd
 
 

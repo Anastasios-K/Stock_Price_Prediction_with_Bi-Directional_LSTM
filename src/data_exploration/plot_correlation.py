@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from src.plotly_plots.heatmap import HeatmapTrace
 
 
-class PlotCorrel:
+class CorrPlot:
     """
     Calculate correlation and Plot heatmap for fully sychronised data (no delays between features)
         corr_method: one of ("pearson", "kendall" or "spearman")

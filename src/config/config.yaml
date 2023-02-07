@@ -9,6 +9,7 @@ df_structure:
   low: "Low"
   adjclose: "Adj Close"
   volume: "Volume"
+  labels: "Labels"
 
 required_dirs:
   reports: ["results", "reports"]
@@ -19,6 +20,10 @@ required_dirs:
 data_engineering:
   fill_method: "polynomial"  # polynomial or linear
   poly_order: 2
+  forced_functions:
+    no_nans: "NoNan"
+    no_dupl: "NoDupl"
+    no_zero: "NoZero"
 
 technical_analysis:
   moving_avg_window: 10
@@ -27,6 +32,8 @@ technical_analysis:
   macd_short_window: 12
   macd_long_window: 26
   signal_window: 9
+
+label_tollerance: 0.01
 
 
 data_files_type: "csv"

@@ -4,7 +4,7 @@ import itertools
 import os
 
 
-class PlotDistributions:
+class DistributionPlot:
 
     def __init__(self,
                  dataframe,
