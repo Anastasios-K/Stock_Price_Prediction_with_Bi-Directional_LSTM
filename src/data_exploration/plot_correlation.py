@@ -1,26 +1,23 @@
 import os
 import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
 from src.plotly_plots.heatmap import HeatmapTrace
+from src.config.load_conifg import Config
 
 
 class CorrPlot:
-    """
-    Calculate correlation and Plot heatmap for fully sychronised data (no delays between features)
-        corr_method: one of ("pearson", "kendall" or "spearman")
-    """
+    """ Calculate correlation and Plot heatmap. """
 
     def __init__(self,
-                 dataframe,
-                 config,
-                 fig_title,
-                 corr_method,
-                 colorscale="Magma"
-                 ):
+                 dataframe: pd.DataFrame,
+                 config: Config,
+                 fig_title: str,
+                 colorscale: str = "Magma"):
 
         corr = self.__calc_correlation(
             dataframe=dataframe,
-            corr_method=corr_method
+            config=config
         )
         trace = self.__create_trace(
             corr_df=corr,
@@ -38,15 +35,13 @@ class CorrPlot:
         )
 
     @staticmethod
-    def __calc_correlation(dataframe,
-                           corr_method
-                           ):
-        return dataframe.corr(method=corr_method)
+    def __calc_correlation(dataframe: pd.DataFrame,
+                           config: Config) -> pd.DataFrame:
+        return dataframe.corr(method=config.dataexpl.corrmethod)
 
     @staticmethod
-    def __create_trace(corr_df,
-                       colorscale
-                       ):
+    def __create_trace(corr_df: pd.DataFrame,
+                       colorscale: str) -> go.Trace:
         heatmap_trace = HeatmapTrace(
             data=np.array(corr_df),
             xaxis_vals=corr_df.columns,
@@ -56,9 +51,8 @@ class CorrPlot:
         return heatmap_trace.trace
 
     @staticmethod
-    def __create_layout(fig_title,
-                        config
-                        ):
+    def __create_layout(fig_title: str,
+                        config: Config) -> go.Layout:
         heatmap_layout = go.Layout(
             title=dict(
                 font=dict(
@@ -73,11 +67,10 @@ class CorrPlot:
         return heatmap_layout
 
     @staticmethod
-    def __create_fig(trace,
-                     layout,
-                     config,
-                     fig_title
-                     ):
+    def __create_fig(trace: go.Trace,
+                     layout: go.Layout,
+                     config: Config,
+                     fig_title: str):
         fig = go.Figure(
             data=trace,
             layout=layout

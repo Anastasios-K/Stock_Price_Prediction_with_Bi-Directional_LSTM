@@ -1,49 +1,37 @@
 import pandas as pd
-from src.secondary_modules.save_report import SaveReport
+from src.config.load_conifg import Config
+from src.secondary_modules.report_saving import ReportSaving
 
 
-class DataWithoutDuplicates:
+def set_date_index(data: pd.DataFrame, config: Config) -> pd.DataFrame:
+    """ Create a Date feature. Gets Date from index, as it is set in the "fixed data types/foramt" step. """
+    data[config.dfstructure.date] = data.index
+    return data
 
-    def __init__(self,
-                 data: pd.DataFrame,
-                 config
-                 ):
 
-        data[config.dfstructure.date] = data.index
+def count_duplicates(data: pd.DataFrame, config: Config) -> None:
+    """ Count duplicates based on the Date feature. """
+    data = set_date_index(data=data, config=config)
+    path2save = config.dirs2make.reports
+    dupli_amount = data[config.dfstructure.date].duplicated(False).sum()
 
-        self.__count_duplicates(
-            data=data,
-            config=config,
-        )
-        self.cooked_data = self.__remove_duplicates(
-            data=data,
-            config=config
-        )
+    ReportSaving(
+        path2save=path2save,
+        data=list(str(dupli_amount)),
+        title="Duplicates"
+    )
 
-    @staticmethod
-    def __count_duplicates(data: pd.DataFrame,
-                           config
-                           ):
-        path2save = config.dirs2make.reports
-        dupli_amount = data[config.dfstructure.date].duplicated(False).sum()
 
-        SaveReport(
-            path2save=path2save,
-            data=list(str(dupli_amount)),
-            title="Duplicates"
-        )
-
-    @staticmethod
-    def __remove_duplicates(data: pd.DataFrame,
-                            config
-                            ):
-        data.drop_duplicates(
-            subset="Date",
-            keep="first",
-            inplace=True
-        )
-        data.drop(
-            columns=[config.dfstructure.date],
-            inplace=True
-        )
-        return data
+def remove_duplicates(data: pd.DataFrame, config: Config) -> pd.DataFrame:
+    """ Remove duplicates identified based on the Date feature. Drops the Date feature at the end. """
+    data = set_date_index(data=data, config=config)
+    data.drop_duplicates(
+        subset="Date",
+        keep="first",
+        inplace=True
+    )
+    data.drop(
+        columns=[config.dfstructure.date],
+        inplace=True
+    )
+    return data
