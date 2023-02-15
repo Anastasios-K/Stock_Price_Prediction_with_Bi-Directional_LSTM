@@ -2,34 +2,37 @@ import matplotlib.pyplot as plt
 from math import ceil
 import itertools
 import os
+import pandas as pd
+from src.config.load_conifg import Config
 
 
 class DistributionPlot:
 
     def __init__(self,
-                 dataframe,
-                 config
-                 ):
+                 dataframe: pd.DataFrame,
+                 config: Config,
+                 file_name: str):
         cols, rows = self.__calc_subplot_rows_cols(dataframe=dataframe)
         self.__create_distr_subplots(
             cols=cols,
             rows=rows,
             dataframe=dataframe,
-            config=config
+            config=config,
+            file_name=file_name
         )
 
     @staticmethod
-    def __calc_subplot_rows_cols(dataframe):
+    def __calc_subplot_rows_cols(dataframe: pd.DataFrame) -> (int, int):
         subplot_cols = 3
         subplot_rows = ceil(len(dataframe.columns) / subplot_cols)
         return subplot_cols, subplot_rows
 
     @staticmethod
-    def __create_distr_subplots(cols,
-                                rows,
-                                dataframe,
-                                config
-                                ):
+    def __create_distr_subplots(cols: int,
+                                rows: int,
+                                dataframe: pd.DataFrame,
+                                config: Config,
+                                file_name: str) -> None:
         subplot_coordinates = list(itertools.product(
             range(0, rows),
             range(0, cols)
@@ -56,6 +59,6 @@ class DistributionPlot:
 
         fig.savefig(os.path.join(
             *config.dirs2make.figures,
-            "Data_Distribution" ".png"
+            file_name + ".png"
         ))
 

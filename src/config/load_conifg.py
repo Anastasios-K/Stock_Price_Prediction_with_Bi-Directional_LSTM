@@ -1,7 +1,29 @@
 from dataclasses import dataclass
 from typing import List
 import typing as t
-from src.secondary_modules.read_yaml import YamlReader
+from src.secondary_modules.yaml_reader import YamlReader
+
+
+@dataclass
+class StockName:
+    stockname: str
+
+    @classmethod
+    def read_config(cls: t.Type["StockName"], obj: dict):
+        return cls(
+            stockname=obj["stock_name"]["stock_name"]
+        )
+
+
+@dataclass
+class ModelName:
+    modelname: str
+
+    @classmethod
+    def read_config(cls: t.Type["ModelName"], obj: dict):
+        return cls(
+            modelname=obj["model_name"]["model_name"]
+        )
 
 
 @dataclass
@@ -16,7 +38,7 @@ class Paths:
 
 
 @dataclass
-class DfStructure:
+class InputDataStructureucture:
     date: str
     close: str
     open: str
@@ -27,16 +49,16 @@ class DfStructure:
     labels: str
 
     @classmethod
-    def read_config(cls: t.Type["DfStructure"], obj: dict):
+    def read_config(cls: t.Type["InputDataStructureucture"], obj: dict):
         return cls(
-            date=obj["df_structure"]["date"],
-            close=obj["df_structure"]["close"],
-            open=obj["df_structure"]["open"],
-            high=obj["df_structure"]["high"],
-            low=obj["df_structure"]["low"],
-            adjclose=obj["df_structure"]["adjclose"],
-            volume=obj["df_structure"]["volume"],
-            labels=obj["df_structure"]["labels"]
+            date=obj["input_data_structure"]["date"],
+            close=obj["input_data_structure"]["close"],
+            open=obj["input_data_structure"]["open"],
+            high=obj["input_data_structure"]["high"],
+            low=obj["input_data_structure"]["low"],
+            adjclose=obj["input_data_structure"]["adjclose"],
+            volume=obj["input_data_structure"]["volume"],
+            labels=obj["input_data_structure"]["labels"]
         )
 
 
@@ -47,7 +69,7 @@ class FeaturesInUse:
     @classmethod
     def read_config(cls: t.Type["FeaturesInUse"], obj: dict):
         return cls(
-            features=obj["features_in_use"]
+            features=obj["features_in_use"]["features_in_use"]
         )
 
 
@@ -72,18 +94,25 @@ class Dirs2Make:
 class DataEngin:
     fill_method: str
     poly_order: int
-    no_nans: str
-    no_dupl: str
-    no_zero: str
 
     @classmethod
     def read_config(cls: t.Type["DataEngin"], obj: dict):
         return cls(
             fill_method=obj["data_engineering"]["fill_method"],
-            poly_order=obj["data_engineering"]["poly_order"],
-            no_nans=obj["data_engineering"]["forced_functions"]["no_nans"],
-            no_dupl=obj["data_engineering"]["forced_functions"]["no_dupl"],
-            no_zero=obj["data_engineering"]["forced_functions"]["no_zero"]
+            poly_order=obj["data_engineering"]["poly_order"]
+        )
+
+
+@dataclass
+class DataExpl:
+    corrmethod: str
+    autocorrlag: int
+
+    @classmethod
+    def read_config(cls: t.Type["DataExpl"], obj: dict):
+        return cls(
+            corrmethod=obj["data_exploration"]["correlation_method"],
+            autocorrlag=obj["data_exploration"]["auto_correlation_lags"]
         )
 
 
@@ -109,37 +138,26 @@ class TechAnal:
 
 
 @dataclass
-class LabelTollerance:
-    tollerance: int
+class LabelTolerance:
+    tolerance: int
 
     @classmethod
-    def read_config(cls: t.Type["LabelTollerance"], obj: dict):
+    def read_config(cls: t.Type["LabelTolerance"], obj: dict):
         return cls(
-            tollerance=obj["label_tollerance"]
-        )
-
-
-
-
-@dataclass
-class FileType:
-    datafiletype: str
-
-    @classmethod
-    def read_config(cls: t.Type["FileType"], obj: dict):
-        return cls(
-            datafiletype=obj["data_files_type"]
+            tolerance=obj["label_tolerance"]["tolerance"]
         )
 
 
 @dataclass
-class Feature2Shift:
-    feature2shift: str
+class Scaler:
+    method: str
+    minmax_range: list
 
     @classmethod
-    def read_config(cls: t.Type["Feature2Shift"], obj: dict):
+    def read_config(cls: t.Type["Scaler"], obj: dict):
         return cls(
-            feature2shift=obj["feature2shift"]
+            method=obj["scaling"]["method"],
+            minmax_range=obj["scaling"]["minmax_range"]
         )
 
 
@@ -167,14 +185,15 @@ class Config:
     def __init__(self, config_path):
         config_file = YamlReader(path=config_path).content
 
+        self.stockname = StockName.read_config(obj=config_file)
+        self.modelname = ModelName.read_config(obj=config_file)
         self.paths = Paths.read_config(obj=config_file)
-        self.dfstructure = DfStructure.read_config(obj=config_file)
+        self.dfstructure = InputDataStructureucture.read_config(obj=config_file)
         self.featuresinuse = FeaturesInUse.read_config(obj=config_file)
         self.dirs2make = Dirs2Make.read_config(obj=config_file)
         self.dataengin = DataEngin.read_config(obj=config_file)
+        self.dataexpl = DataExpl.read_config(obj=config_file)
         self.techanal = TechAnal.read_config(obj=config_file)
-        self.labeltollerance = LabelTollerance.read_config(obj=config_file)
-
-        self.feature2shift = Feature2Shift.read_config(obj=config_file)
+        self.labeltolerance = LabelTolerance.read_config(obj=config_file)
+        self.scaler = Scaler.read_config(obj=config_file)
         self.plotdefault = PlotDefault.read_config(obj=config_file)
-        self.datafiletype = FileType.read_config(obj=config_file)

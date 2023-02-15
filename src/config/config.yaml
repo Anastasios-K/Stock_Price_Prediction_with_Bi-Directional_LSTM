@@ -1,7 +1,13 @@
+stock_name:
+  stock_name: "TSCO"
+
+model_name:
+  model_name: "BiLSTM"
+
 paths:
   data_path: "data/TSCO.csv"
 
-df_structure:
+input_data_structure:
   date: "Date"
   close: "Close"
   open: "Open"
@@ -11,7 +17,8 @@ df_structure:
   volume: "Volume"
   labels: "Labels"
 
-features_in_use: ["Date", "Close", "Open", "High", "Low", "MACD", "MFI"]
+features_in_use:
+  features_in_use: ["Date", "Close", "Open", "High", "Low", "MACD", "MFI", "Labels"]
 
 required_dirs:
   reports: ["results", "reports"]
@@ -22,10 +29,11 @@ required_dirs:
 data_engineering:
   fill_method: "polynomial"  # polynomial or linear
   poly_order: 2
-  forced_functions:
-    no_nans: "NoNan"
-    no_dupl: "NoDupl"
-    no_zero: "NoZero"
+
+data_exploration:
+  correlation_method: "pearson"  # "pearson", "kendall" or "spearman"
+  auto_correlation_lags: 24
+
 
 technical_analysis:
   moving_avg_window: 10
@@ -35,18 +43,12 @@ technical_analysis:
   macd_long_window: 26
   signal_window: 9
 
-label_tollerance: 0.01
+label_tolerance:
+  tolerance: 0.001
 
-
-
-
-
-data_files_type: "csv"
-
-report_names:
-  engineering: "data_engineering_report.txt"
-
-feature2shift: "BTC_Close"
+scaling:
+  method: "robust"  # "robust" or "minmax" or None
+  minmax_range: [0, 1]
 
 plotting_default:
   title_color: "#000000"
@@ -54,3 +56,4 @@ plotting_default:
   title_font_size: 20
   axes_line_width: 2
   axes_line_color: "#000000"
+
