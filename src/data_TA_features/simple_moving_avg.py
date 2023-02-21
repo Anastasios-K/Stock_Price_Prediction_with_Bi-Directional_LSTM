@@ -1,22 +1,10 @@
 import pandas as pd
-from src.config.load_conifg import Config
+from src.config.load_conifg import Configurator
 
 
-class SMA:
+def simple_movinge_avg(data: pd.DataFrame, config: Configurator) -> pd.DataFrame:
     """ Simple Moving Average """
+    rolling_window = config.techanal.smawindow
+    sma = data[config.dfstructure.close].rolling(rolling_window).mean()
+    return sma
 
-    def __init__(self,
-                 data: pd.DataFrame,
-                 config: Config):
-
-        self.sma = self.__simple_movinge_avg(
-            data=data,
-            config=config,
-        )
-
-    @staticmethod
-    def __simple_movinge_avg(data: pd.DataFrame,
-                             config: Config) -> pd.DataFrame:
-        rolling_window = config.techanal.smawindow
-        sma = data[config.dfstructure.close].rolling(rolling_window).mean()
-        return sma

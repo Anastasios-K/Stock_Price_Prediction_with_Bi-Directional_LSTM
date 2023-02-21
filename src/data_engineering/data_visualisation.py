@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import os
 import pandas as pd
-from src.config.load_conifg import Config
+from src.config.load_conifg import Configurator
 from src.plotly_plots.scatter_plot import ScatterTrace
 
 
@@ -10,74 +10,56 @@ class DataOverview:
 
     def __init__(self,
                  data: pd.DataFrame,
-                 config: Config,
-                 title: str):
-
+                 config: Configurator):
+        self.__data = data
         self.__config = config
-        self.__plot_all_resolutions(data=data, title=title)
 
-    @staticmethod
-    def __calc_weekly_resolution(data: pd.DataFrame) -> pd.DataFrame:
-        return data.resample('W').mean()
+    def __resample_2_weekly(self) -> pd.DataFrame:
+        """ Resample data into weekly resolution. """
+        return self.__data.resample('W').mean()
 
-    @staticmethod
-    def __calc_monthly_resolution(data: pd.DataFrame) -> pd.DataFrame:
-        return data.resample('M').mean()
+    def __resample_2_monthly(self) -> pd.DataFrame:
+        """ Resample data into monthly resolution. """
+        return self.__data.resample('M').mean()
 
-    @staticmethod
-    def __calc_seasonal_resolution(data: pd.DataFrame) -> pd.DataFrame:
-        return data.resample('3M').mean()
+    def __resample_2_fiscal_quarter(self) -> pd.DataFrame:
+        return self.__data.resample('BQ').mean()
 
-    @staticmethod
-    def __calc_quarter_resolution(data: pd.DataFrame) -> pd.DataFrame:
-        return data.resample('Q').mean()
+    def __resample_2_yearly(self) -> pd.DataFrame:
+        return self.__data.resample('Y').mean()
 
-    @staticmethod
-    def __calc_yearly_resolution(data: pd.DataFrame) -> pd.DataFrame:
-        return data.resample('Y').mean()
-
-    def __plot_all_resolutions(self,
-                               data: pd.DataFrame,
-                               title: str) -> None:
-
+    def plot_all_resolutions(self, title: str) -> None:
         config = self.__config
-        weeek = self.__calc_weekly_resolution(data=data)
-        month = self.__calc_monthly_resolution(data=data)
-        season = self.__calc_seasonal_resolution(data=data)
-        quarter = self.__calc_quarter_resolution(data=data)
-        year = self.__calc_yearly_resolution(data=data)
+        y_feature = self.__config.dfstructure.close
+        weeek = self.__resample_2_weekly()
+        month = self.__resample_2_monthly()
+        quarter = self.__resample_2_fiscal_quarter()
+        year = self.__resample_2_yearly()
 
         week_trace = ScatterTrace(
             xdata=weeek.index,
-            ydata=weeek[config.dfstructure.close],
+            ydata=weeek[y_feature],
             name="weekly_resolution",
             mode="lines",
             linecolour="#046A38"
         ).trace
         month_trace = ScatterTrace(
             xdata=month.index,
-            ydata=month[config.dfstructure.close],
+            ydata=month[y_feature],
             name="month_resolution",
             mode="lines",
             linecolour="#C4D600"
         ).trace
-        season_trace = ScatterTrace(
-            xdata=season.index,
-            ydata=season[config.dfstructure.close],
-            name="season_resolution",
-            mode="lines",
-            linecolour="#00A3E0"
-        ).trace
-        quarter_trace = ScatterTrace(
+        fiscal_quarter_trace = ScatterTrace(
             xdata=quarter.index,
-            ydata=quarter[config.dfstructure.close],
+            ydata=quarter[y_feature],
             name="quarter_resolution",
             mode="lines",
             linecolour="#75787B"
         ).trace
         year_trace = ScatterTrace(
             xdata=year.index,
-            ydata=year[config.dfstructure.close],
+            ydata=year[y_feature],
             name="year_resolution",
             mode="lines",
             linecolour="#ED8B00"
@@ -101,8 +83,7 @@ class DataOverview:
             data=[
                 week_trace,
                 month_trace,
-                season_trace,
-                quarter_trace,
+                fiscal_quarter_trace,
                 year_trace
             ],
             layout=layout

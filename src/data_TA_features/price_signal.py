@@ -1,30 +1,17 @@
 from src.data_TA_features.moving_avg_convergence_divergence import MACD
-from src.config.load_conifg import Config
+from src.config.load_conifg import Configurator
 import pandas as pd
 
 
-class PS:
+def signal(data: pd.DataFrame, config: Configurator) -> pd.DataFrame:
     """ Price Signal """
+    macd = MACD(
+        data=data,
+        config=config
+    ).macd
 
-    def __init__(self,
-                 data: pd.DataFrame,
-                 config: Config):
-
-        self.sma = self.__signal(
-            data=data,
-            config=config
-        )
-
-    @staticmethod
-    def __signal(data: pd.DataFrame,
-                 config: Config) -> pd.DataFrame:
-        macd = MACD(
-            data=data,
-            config=config
-        ).macd
-
-        signal = pd.DataFrame(macd.ewm(
-            span=config.techanal.signalwindow,
-            adjust=False
-        ).mean())
-        return signal
+    signal = pd.DataFrame(macd.ewm(
+        span=config.techanal.signalwindow,
+        adjust=False
+    ).mean())
+    return signal

@@ -3,20 +3,20 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from src.plotly_plots.heatmap import HeatmapTrace
-from src.config.load_conifg import Config
+from src.config.load_conifg import Configurator
 
 
 class CorrPlot:
     """ Calculate correlation and Plot heatmap. """
 
     def __init__(self,
-                 dataframe: pd.DataFrame,
-                 config: Config,
+                 data: pd.DataFrame,
+                 config: Configurator,
                  fig_title: str,
                  colorscale: str = "Magma"):
 
         corr = self.__calc_correlation(
-            dataframe=dataframe,
+            dataframe=data,
             config=config
         )
         trace = self.__create_trace(
@@ -36,7 +36,7 @@ class CorrPlot:
 
     @staticmethod
     def __calc_correlation(dataframe: pd.DataFrame,
-                           config: Config) -> pd.DataFrame:
+                           config: Configurator) -> pd.DataFrame:
         return dataframe.corr(method=config.dataexpl.corrmethod)
 
     @staticmethod
@@ -52,7 +52,7 @@ class CorrPlot:
 
     @staticmethod
     def __create_layout(fig_title: str,
-                        config: Config) -> go.Layout:
+                        config: Configurator) -> go.Layout:
         heatmap_layout = go.Layout(
             title=dict(
                 font=dict(
@@ -69,7 +69,7 @@ class CorrPlot:
     @staticmethod
     def __create_fig(trace: go.Trace,
                      layout: go.Layout,
-                     config: Config,
+                     config: Configurator,
                      fig_title: str):
         fig = go.Figure(
             data=trace,

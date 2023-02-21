@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 import typing as t
-from src.secondary_modules.yaml_reader import YamlReader
+from src.helper.helper import Helper
 
 
 @dataclass
@@ -180,10 +180,10 @@ class PlotDefault:
         )
 
 
-class Config:
+class Configurator:
 
     def __init__(self, config_path):
-        config_file = YamlReader(path=config_path).content
+        config_file = Helper().read_yaml_file(path=config_path)
 
         self.stockname = StockName.read_config(obj=config_file)
         self.modelname = ModelName.read_config(obj=config_file)

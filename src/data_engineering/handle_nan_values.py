@@ -1,24 +1,18 @@
 import pandas as pd
-from src.config.load_conifg import Config
-from src.secondary_modules.report_saving import ReportSaving
+from src.config.load_conifg import Configurator
 
 
-def count_nan_values(data: pd.DataFrame, config: Config) -> None:
+def count_nan_values(data: pd.DataFrame) -> [int, int, int, int, int]:
     """ Connt the NaN values. """
-    path2save = config.dirs2make.reports
     nan_amount = [
         f"{col}: {data[col].isna().sum()}"
         for col
         in data.columns
     ]
-    ReportSaving(
-        path2save=path2save,
-        data=nan_amount,
-        title="Nan Values"
-    )
+    return nan_amount
 
 
-def replace_nan_values(data: pd.DataFrame, config: Config) -> pd.DataFrame:
+def replace_nan_values(data: pd.DataFrame, config: Configurator) -> pd.DataFrame:
     """ Replace the NaN values based on predetermined method, set in the configurations. """
     if config.dataengin.fill_method == "polynomial":
         [

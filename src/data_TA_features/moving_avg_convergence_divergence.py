@@ -1,34 +1,22 @@
 import pandas as pd
-from src.data_TA_features.exponential_moving_avg import EMA
-from src.config.load_conifg import Config
+from src.data_TA_features.exponential_moving_avg import exponential_moving_avg
+from src.config.load_conifg import Configurator
 
 
-class MACD:
+def moving_avg_convergence_divergence(data: pd.DataFrame, config: Configurator) -> pd.DataFrame:
     """ Moving Average Convergence Divergence """
+    ema_short = exponential_moving_avg(
+        data=data,
+        config=config,
+        rolling_window=config.techanal.macdshortwindow
+    )
 
-    def __init__(self,
-                 data: pd.DataFrame,
-                 config: Config):
+    ema_long = exponential_moving_avg(
+        data=data,
+        config=config,
+        rolling_window=config.techanal.macdlongwindow
+    )
 
-        self.macd = self.__moving_avg_convergence_divergence(
-            data=data,
-            config=config
-        )
+    macd = ema_short - ema_long
+    return macd
 
-    @staticmethod
-    def __moving_avg_convergence_divergence(data: pd.DataFrame,
-                                            config: Config) -> pd.DataFrame:
-        ema_short = EMA(
-            data=data,
-            config=config,
-            rolling_window=config.techanal.macdshortwindow
-        ).ema
-
-        ema_long = EMA(
-            data=data,
-            config=config,
-            rolling_window=config.techanal.macdlongwindow
-        ).ema
-
-        macd = ema_short - ema_long
-        return macd
