@@ -1,28 +1,21 @@
 import pandas as pd
-from src.config.load_conifg import Config
-from src.secondary_modules.report_saving import ReportSaving
+from src.config.load_conifg import Configurator
 
 
-def set_date_index(data: pd.DataFrame, config: Config) -> pd.DataFrame:
+def set_date_index(data: pd.DataFrame, config: Configurator) -> pd.DataFrame:
     """ Create a Date feature. Gets Date from index, as it is set in the "fixed data types/foramt" step. """
     data[config.dfstructure.date] = data.index
     return data
 
 
-def count_duplicates(data: pd.DataFrame, config: Config) -> None:
+def count_duplicates(data: pd.DataFrame, config: Configurator) -> int:
     """ Count duplicates based on the Date feature. """
     data = set_date_index(data=data, config=config)
-    path2save = config.dirs2make.reports
     dupli_amount = data[config.dfstructure.date].duplicated(False).sum()
-
-    ReportSaving(
-        path2save=path2save,
-        data=list(str(dupli_amount)),
-        title="Duplicates"
-    )
+    return dupli_amount
 
 
-def remove_duplicates(data: pd.DataFrame, config: Config) -> pd.DataFrame:
+def remove_duplicates(data: pd.DataFrame, config: Configurator) -> pd.DataFrame:
     """ Remove duplicates identified based on the Date feature. Drops the Date feature at the end. """
     data = set_date_index(data=data, config=config)
     data.drop_duplicates(

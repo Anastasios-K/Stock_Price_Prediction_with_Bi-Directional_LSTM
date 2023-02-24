@@ -18,7 +18,7 @@ input_data_structure:
   labels: "Labels"
 
 features_in_use:
-  features_in_use: ["Date", "Close", "Open", "High", "Low", "MACD", "MFI", "Labels"]
+  features_in_use: ["Close", "Open", "High", "Low", "Volume", "MACD", "MFI"]
 
 required_dirs:
   reports: ["results", "reports"]

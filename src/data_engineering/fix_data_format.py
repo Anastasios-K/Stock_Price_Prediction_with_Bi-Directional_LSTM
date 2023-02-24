@@ -1,9 +1,8 @@
 import pandas as pd
-from src.config.load_conifg import Config
-from src.secondary_modules.report_saving import ReportSaving
+from src.config.load_conifg import Configurator
 
 
-def fix_data_format(raw_data: pd.DataFrame, config: Config) -> pd.DataFrame:
+def fix_data_format(raw_data: pd.DataFrame, config: Configurator) -> pd.DataFrame:
     """ Fix data format and data types. So, data is ready for engineering, analysis etc. """
 
     for col in raw_data.columns:
@@ -30,9 +29,4 @@ def fix_data_format(raw_data: pd.DataFrame, config: Config) -> pd.DataFrame:
         for attr, localtype
         in zip(attributes, types)
     ]
-    ReportSaving(
-        data=reporting_list,
-        title="Dtypes",
-        path2save=config.dirs2make.reports
-    )
     return fixed_data
