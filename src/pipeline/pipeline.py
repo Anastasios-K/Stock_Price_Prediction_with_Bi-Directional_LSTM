@@ -9,6 +9,8 @@ from src.labels_creation.labels_creator import LabelCreator
 from src.model_development.LSTM_builder import LstmBuilder
 from src.model_development.scaler import scaler
 from src.model_development.trainer import Trainer
+from src.model_development.tester import Tester
+from src.model_development.tracker import Tracker
 
 from src.data_engineering.fix_data_format import fix_data_format
 from src.data_engineering.handle_nan_values import count_nan_values, replace_nan_values
@@ -32,18 +34,16 @@ class Pipeline:
         self.test_data = None
         self.train_labels = None
         self.test_labels = None
+        self.data_status = list()
         self.class_weights = None
-        self.reshaped_tr_data = None
-        self.reshaped_ts_data = None
-        self.model = None
+        self.__model = None
         self.__info_tracker = dict()
 
-        self.unique_id = Helper.create_str_time_id()
         self.config = pipeline_config
         self.model_builder = model_builder
-        Helper.create_required_dirs(config=self.config, unique_id=self.unique_id)
 
-        Helper.create_required_dirs(config=self.config, unique_id=self.unique_id)
+        self.__unique_id = Helper.create_str_time_id()
+        Helper.create_required_dirs(config=self.config, unique_id=self.__unique_id)
         self.__raw_data = pd.read_csv(self.config.paths.datapath)
         self.__prepare_data()
         self.__create_labels()
@@ -106,11 +106,13 @@ class Pipeline:
             data=test_data_no_duplicates,
             config=self.config
         )
+        self.data_status.append("preprocessed")
 
     def explore_data(self, data: Optional[pd.DataFrame] = None) -> DataExplorator:
         """
         Optional method that gives access to data exploration actions.
         If None, default data is train data.
+        Otherwise, you can pass test data.
         """
         if data is None:
             data = self.train_data
@@ -118,8 +120,9 @@ class Pipeline:
         exploration = DataExplorator(
             data=data,
             config=self.config,
-            unique_id=self.unique_id
+            unique_id=self.__unique_id
         )
+        self.data_status.append("explored")
         return exploration
 
     def enrich_data(self,
@@ -174,6 +177,8 @@ class Pipeline:
                 config=self.config
             ).calc_money_flow_index()
 
+        self.data_status.append("enriched")
+
     def __create_labels(self) -> None:
         """
         Create labels.
@@ -187,11 +192,13 @@ class Pipeline:
             data=self.test_data,
             config=self.config
         )
+        self.data_status.append("after_class_creation")
 
     def create_class_weights(self):
         """
-        Optional method to create class wwights.
+        Optional method to create class weights.
         Useful in case of imbalanced data.
+        It takes train_data only, as class weights are not calculated for test data.
         """
         self.class_weights = LabelCreator.create_label_weights(train_labels=self.train_labels)
 
@@ -204,34 +211,45 @@ class Pipeline:
             config=self.config,
             train_data=self.train_data,
             test_data=self.test_data,
-            unique_id=self.unique_id,
+            unique_id=self.__unique_id,
             pre_fitted_scaler_path=pre_fitted_scaler_path
         )
+        self.data_status.append("scaled")
 
     def build_model(self):
         building_obj = self.model_builder(
             config=self.config,
-            unique_id=self.unique_id,
+            unique_id=self.__unique_id,
             train_data=self.train_data,
             test_data=self.test_data
         )
 
-        self.reshaped_tr_data = building_obj.reshaped_tr_data
-        self.reshaped_ts_data = building_obj.reshaped_ts_data
+        self.train_data = building_obj.reshaped_tr_data
+        self.test_data = building_obj.reshaped_ts_data
         self.train_labels = self.train_labels[self.config.forecasthorizon.forcasthorizon:]
         self.test_labels = self.test_labels[self.config.forecasthorizon.forcasthorizon:]
-        self.model = building_obj.keras_tuner_model
+        self.__model = building_obj.keras_tuner_model
+        self.data_status.append("reshaped")
 
     def execute_training_testing_tracking(self):
         training_obj = Trainer(
             config=self.config,
-            unique_id=self.unique_id,
+            unique_id=self.__unique_id,
             class_weights=self.class_weights,
-            reshaped_train_data=self.reshaped_tr_data,
+            reshaped_train_data=self.train_data,
             train_labels=self.train_labels,
-            tuner_object=self.model
+            tuner_object=self.__model
         )
-        self.xxx = training_obj.execute_training()
+        self.trained_model = training_obj.execute_training()
+
+        # testing_obj = Tester(
+        #     config=self.config,
+        #     unique_id=self.__unique_id,
+        #     test_data=self.test_data,
+        #     test_labels=self.test_labels,
+        #     trained_model=
+        # )
+
 
 
 if __name__ == "__main__":
@@ -242,21 +260,20 @@ if __name__ == "__main__":
     model_builder = LstmBuilder
 
     run = Pipeline(pipeline_config=config, model_builder=model_builder)
-    # run.explore_data().plot_multi_resolution(title="asdf")
-    # run.explore_data().plot_distribution(fig_title="asda")
-    # run.explore_data().plot_correlation("asd1")
-    # run.explore_data().plot_autocorrelation()
-    # run.explore_data().cerate_eda_report(report_name="rep123")
+    run.explore_data().plot_multi_resolution(title="asdf")
+    run.explore_data().plot_distribution(fig_title="asda")
+    run.explore_data().plot_correlation("asd1")
+    run.explore_data().plot_autocorrelation()
+    run.explore_data().cerate_eda_report(report_name="rep123")
     #
     # run.enrich_data(sma=True, mfi=True)
     #
-    run.create_class_weights()
-    run.build_model()
-    run.execute_training_testing_tracking()
+    # run.create_class_weights()
+    # run.build_model()
+    # run.execute_training_testing_tracking()
 
     # xxx = run.reshaped_tr_data
     # import numpy as np
     #
     # yyy = np.array(xxx)
     # zzz = run.train_labels.values
-

@@ -3,6 +3,9 @@ venv
 backup
 __pycache__
 private_data
+results
+
+!*/sample
 
 *.html
 *.txt

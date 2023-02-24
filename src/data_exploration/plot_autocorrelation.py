@@ -29,7 +29,7 @@ class AutocorrPlot:
         plt.title("Autocorrelation")
         fig.savefig(os.path.join(
             *self.__config.dirs2make.figures,
-            self.__unique_id,
+            self.__config.modelname.modelname + self.__unique_id,
             "Autocorrelation" ".png"
         ))
         plt.close()
