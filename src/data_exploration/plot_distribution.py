@@ -14,6 +14,7 @@ def calc_subplot_rows_cols(data: pd.DataFrame) -> (int, int):
 
 def create_distr_subplots(data: pd.DataFrame,
                           config: Configurator,
+                          unique_id: str,
                           file_name: str) -> None:
     cols, rows = calc_subplot_rows_cols(data=data)
 
@@ -43,6 +44,7 @@ def create_distr_subplots(data: pd.DataFrame,
 
     fig.savefig(os.path.join(
         *config.dirs2make.figures,
+        config.modelname.modelname + unique_id,
         file_name + ".png"
     ))
 

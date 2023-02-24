@@ -76,6 +76,7 @@ class FeaturesInUse:
 @dataclass
 class Dirs2Make:
     reports: str
+    hyperparams: str
     figures: str
     models: str
     best_models: str
@@ -84,6 +85,7 @@ class Dirs2Make:
     def read_config(cls: t.Type["Dirs2Make"], obj: dict):
         return cls(
             reports=obj["required_dirs"]["reports"],
+            hyperparams=obj["required_dirs"]["hyperparams"],
             figures=obj["required_dirs"]["figures"],
             models=obj["required_dirs"]["models"],
             best_models=obj["required_dirs"]["best_models"]
@@ -180,10 +182,79 @@ class PlotDefault:
         )
 
 
+@dataclass
+class ForecastHorizon:
+    forcasthorizon: int
+
+    @classmethod
+    def read_config(cls: t.Type["ForecastHorizon"], obj: dict):
+        return cls(
+            forcasthorizon=obj["forecast_horizon"]["horizon"]
+        )
+
+
+@dataclass
+class LstmGparams:
+    seed: int
+    epochs: int
+    earlystopping: int
+    actfunc: str
+    reccactfunc: str
+    densactfunc: str
+    classactfunc: str
+    batchsiz: int
+
+    @classmethod
+    def read_config(cls: t.Type["LstmGparams"], obj: dict):
+        return cls(
+            seed=obj["lstm_g_params"]["seed"],
+            epochs=obj["lstm_g_params"]["epochs"],
+            earlystopping=obj["lstm_g_params"]["early_stopping_patience"],
+            actfunc=obj["lstm_g_params"]["activation_function"],
+            reccactfunc=obj["lstm_g_params"]["reccurent_activation_func_function"],
+            densactfunc=obj["lstm_g_params"]["dense_activation"],
+            classactfunc=obj["lstm_g_params"]["classification_activation"],
+            batchsiz=obj["lstm_g_params"]["batch_size"],
+        )
+
+
+@dataclass
+class LstmHparams:
+    lstmunitsmin: int
+    lstmunitsmax: int
+    lstmunitstep: int
+    denseunitsmin: int
+    denseunitsmax: int
+    denseunitstep: int
+    dropoutmin: float
+    dropoutmax: float
+    dropoutstep: int
+    lrmin: float
+    lrmax: float
+    lrstep: int
+
+    @classmethod
+    def read_config(cls: t.Type["LstmHparams"], obj: dict):
+        return cls(
+            lstmunitsmin=obj["lstm_h_params"]["lstm_units_min"],
+            lstmunitsmax=obj["lstm_h_params"]["lstm_units_max"],
+            lstmunitstep=obj["lstm_h_params"]["lstm_unit_step"],
+            denseunitsmin=obj["lstm_h_params"]["dense_units_min"],
+            denseunitsmax=obj["lstm_h_params"]["dense_units_max"],
+            denseunitstep=obj["lstm_h_params"]["dense_unit_step"],
+            dropoutmin=obj["lstm_h_params"]["drop_out_min"],
+            dropoutmax=obj["lstm_h_params"]["drop_out_max"],
+            dropoutstep=obj["lstm_h_params"]["drop_out_step"],
+            lrmin=obj["lstm_h_params"]["lr_min"],
+            lrmax=obj["lstm_h_params"]["lr_max"],
+            lrstep=obj["lstm_h_params"]["lr_step"],
+        )
+
+
 class Configurator:
 
     def __init__(self, config_path):
-        config_file = Helper().read_yaml_file(path=config_path)
+        config_file = Helper.read_yaml_file(path=config_path)
 
         self.stockname = StockName.read_config(obj=config_file)
         self.modelname = ModelName.read_config(obj=config_file)
@@ -197,3 +268,6 @@ class Configurator:
         self.labeltolerance = LabelTolerance.read_config(obj=config_file)
         self.scaler = Scaler.read_config(obj=config_file)
         self.plotdefault = PlotDefault.read_config(obj=config_file)
+        self.forecasthorizon = ForecastHorizon.read_config(obj=config_file)
+        self.lstmGparams = LstmGparams.read_config(obj=config_file)
+        self.lstmHparams = LstmHparams.read_config(obj=config_file)

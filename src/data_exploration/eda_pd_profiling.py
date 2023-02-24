@@ -6,6 +6,7 @@ from src.config.load_conifg import Configurator
 
 def create_eda_report(data: pd.DataFrame,
                       config: Configurator,
+                      unique_id: str,
                       report_name: str) -> None:
     profile = ProfileReport(
         data,
@@ -14,5 +15,6 @@ def create_eda_report(data: pd.DataFrame,
     )
     profile.to_file(os.path.join(
         *config.dirs2make.figures,
+        config.modelname.modelname + unique_id,
         report_name + ".html"
     ))
