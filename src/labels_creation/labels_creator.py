@@ -72,21 +72,18 @@ class LabelCreator(Creator):
         return data, labels_mtrx
 
     @classmethod
-    def create_label_weights(cls, train_labels: pd.Series) -> dict:
+    def create_label_weights(cls, train_labels: np.ndarray) -> dict:
         """
         Calculate class weights based on each class population.
         Crucial step when the training data is imbalanced.
         """
         lbs_weights = {}
+        # capture the 2nd array dimenssion (the number of columns in pd.DataFrame)
         lbs_amount = train_labels.shape[1]
-        lbs_matrix = keras.utils.to_categorical(
-            y=train_labels,
-            num_classes=lbs_amount
-        )
 
         for idx in range(lbs_amount):
             weight_dict = {
-                idx: (1 / np.count_nonzero(lbs_matrix[:, idx] == 1)) * (len(lbs_matrix)) / lbs_amount
+                idx: (1 / np.count_nonzero(train_labels[:, idx] == 1)) * (len(train_labels)) / lbs_amount
             }
             lbs_weights.update(weight_dict)
         return lbs_weights

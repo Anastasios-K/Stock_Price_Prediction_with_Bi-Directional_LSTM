@@ -2,7 +2,7 @@ stock_name:
   stock_name: "TSCO"
 
 model_name:
-  model_name: "BiLSTM"
+  model_name: "sample"
 
 paths:
   data_path: "data/TSCO.csv"
@@ -73,16 +73,16 @@ lstm_g_params:
 
 lstm_h_params:
   lstm_units_min: 10
-  lstm_units_max: 20
-  lstm_unit_step: 5
+  lstm_units_max: 10
+  lstm_unit_step: 10  # step length, for example 5 lstm units
   dense_units_min: 10
-  dense_units_max: 20
-  dense_unit_step: 5
+  dense_units_max: 10
+  dense_unit_step: 10  # step length, for example 5 dense units
   drop_out_min: 0.2
-  drop_out_max: 0.5
-  drop_out_step: 3
+  drop_out_max: 0.2
+  drop_out_step: 1  # number of steps in the given interval min-max
   lr_min: 0.0001
   lr_max: 0.001
-  lr_step: 3
+  lr_step: 3  # number of steps in the given interval min-max
 
 

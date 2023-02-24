@@ -23,8 +23,8 @@ class Trainer:
         self.__tuner_obj = tuner_object
 
     def execute_training(self):
-        tuner = self.__tuner_obj
-        tuner.search(
+        trained_model = self.__tuner_obj
+        trained_model.search(
             x=self.__reshaped_train_data,
             y=self.__train_labels,
             verbose=1,
@@ -52,4 +52,4 @@ class Trainer:
                 )
             ]
         )
-        return tuner
+        return trained_model
