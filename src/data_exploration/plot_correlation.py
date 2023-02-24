@@ -12,53 +12,41 @@ class CorrPlot:
     def __init__(self,
                  data: pd.DataFrame,
                  config: Configurator,
+                 unique_id: str,
                  fig_title: str,
                  colorscale: str = "Magma"):
 
-        corr = self.__calc_correlation(
-            dataframe=data,
-            config=config
-        )
-        trace = self.__create_trace(
-            corr_df=corr,
-            colorscale=colorscale
-        )
-        layout = self.__create_layout(
-            fig_title=fig_title,
-            config=config
-        )
+        self.__data = data
+        self.__config = config
+        self.__unique_id = unique_id
+        self.__color = colorscale
+
+        corr = self.__calc_correlation()
         self.__create_fig(
-            trace=trace,
-            layout=layout,
-            config=config,
+            trace=self.__create_trace(corr_df=corr),
+            layout=self.__create_layout(fig_title=fig_title),
             fig_title=fig_title
         )
 
-    @staticmethod
-    def __calc_correlation(dataframe: pd.DataFrame,
-                           config: Configurator) -> pd.DataFrame:
-        return dataframe.corr(method=config.dataexpl.corrmethod)
+    def __calc_correlation(self) -> pd.DataFrame:
+        return self.__data.corr(method=self.__config.dataexpl.corrmethod)
 
-    @staticmethod
-    def __create_trace(corr_df: pd.DataFrame,
-                       colorscale: str) -> go.Trace:
+    def __create_trace(self, corr_df: pd.DataFrame) -> go.Trace:
         heatmap_trace = HeatmapTrace(
             data=np.array(corr_df),
             xaxis_vals=corr_df.columns,
             yaxis_vals=corr_df.columns,
-            colorscale=colorscale
+            colorscale=self.__color
         )
         return heatmap_trace.trace
 
-    @staticmethod
-    def __create_layout(fig_title: str,
-                        config: Configurator) -> go.Layout:
+    def __create_layout(self, fig_title: str) -> go.Layout:
         heatmap_layout = go.Layout(
             title=dict(
                 font=dict(
-                    color=config.plotdefault.title_color,
-                    family=config.plotdefault.title_font_style,
-                    size=config.plotdefault.title_font_size
+                    color=self.__config.plotdefault.title_color,
+                    family=self.__config.plotdefault.title_font_style,
+                    size=self.__config.plotdefault.title_font_size
                 ),
                 text=fig_title,
                 x=0.5
@@ -66,16 +54,16 @@ class CorrPlot:
         )
         return heatmap_layout
 
-    @staticmethod
-    def __create_fig(trace: go.Trace,
+    def __create_fig(self,
+                     trace: go.Trace,
                      layout: go.Layout,
-                     config: Configurator,
                      fig_title: str):
         fig = go.Figure(
             data=trace,
             layout=layout
         )
         fig.write_html(os.path.join(
-            *config.dirs2make.figures,
+            *self.__config.dirs2make.figures,
+            self.__config.modelname.modelname + self.__unique_id,
             fig_title + ".html"
         ))

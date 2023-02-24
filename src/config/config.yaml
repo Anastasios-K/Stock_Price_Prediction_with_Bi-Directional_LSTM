@@ -22,6 +22,7 @@ features_in_use:
 
 required_dirs:
   reports: ["results", "reports"]
+  hyperparams: ["results", "hyperparams"]
   figures: ["results", "figures"]
   models: ["results", "models"]
   best_models: ["results", "best_models"]
@@ -47,7 +48,7 @@ label_tolerance:
   tolerance: 0.001
 
 scaling:
-  method: "robust"  # "robust" or "minmax" or None
+  method: "standardscaler"  # "robust", "minmax" or "standardscaler"
   minmax_range: [0, 1]
 
 plotting_default:
@@ -56,4 +57,32 @@ plotting_default:
   title_font_size: 20
   axes_line_width: 2
   axes_line_color: "#000000"
+
+forecast_horizon:
+  horizon: 5
+
+lstm_g_params:
+  seed: 7
+  epochs: 2
+  batch_size: 32
+  early_stopping_patience: 21
+  activation_function: "tanh"
+  reccurent_activation_func_function: "sigmoid"
+  dense_activation: "relu"
+  classification_activation: "softmax"
+
+lstm_h_params:
+  lstm_units_min: 10
+  lstm_units_max: 20
+  lstm_unit_step: 5
+  dense_units_min: 10
+  dense_units_max: 20
+  dense_unit_step: 5
+  drop_out_min: 0.2
+  drop_out_max: 0.5
+  drop_out_step: 3
+  lr_min: 0.0001
+  lr_max: 0.001
+  lr_step: 3
+
 

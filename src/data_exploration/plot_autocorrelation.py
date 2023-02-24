@@ -7,47 +7,46 @@ from src.config.load_conifg import Configurator
 
 class AutocorrPlot:
 
-    def __init__(self,
-                 data: pd.DataFrame,
-                 config: Configurator):
-        print(config.dataexpl.autocorrlag)
+    def __init__(
+            self,
+            data: pd.DataFrame,
+            config: Configurator,
+            unique_id: str
+    ):
+        self.__data = data
+        self.__config = config
+        self.__unique_id = unique_id
 
-        self.__plot_acf(
-            data=data,
-            config=config)
-        # self.__plot_pacf(
-        #     dataframe=dataframe,
-        #     config=config)
+        self.__plot_acf()
+        self.__plot_pacf()
 
-    @staticmethod
-    def __plot_acf(data: pd.DataFrame,
-                   config: Configurator) -> None:
+    def __plot_acf(self) -> None:
         fig = tsaplots.plot_acf(
-            data[config.dfstructure.close],
-            lags=config.dataexpl.autocorrlag,
+            self.__data[self.__config.dfstructure.close],
+            lags=self.__config.dataexpl.autocorrlag,
             fft=True
         )
         plt.title("Autocorrelation")
         fig.savefig(os.path.join(
-            *config.dirs2make.figures,
+            *self.__config.dirs2make.figures,
+            self.__unique_id,
             "Autocorrelation" ".png"
         ))
         plt.close()
 
-    # @staticmethod
-    # def __plot_pacf(dataframe: pd.DataFrame,
-    #                 config: Config) -> None:
-    #     pass
-    #     print("pacf")
-    #     fig = tsaplots.plot_pacf(
-    #         dataframe[config.dfstructure.close],
-    #         lags=config.dataexpl.autocorrlag,
-    #         method="ols"
-    #     )
-    #     plt.title("Partial_Autocorrelation")
-    #     fig.savefig(os.path.join(
-    #         *config.dirs2make.figures,
-    #         "Partial_Autocorrelation" ".png"
-    #     ))
-    #     plt.close()
+    def __plot_pacf(self) -> None:
+        pass
+        print("pacf")
+        fig = tsaplots.plot_pacf(
+            self.__data[self.__config.dfstructure.close],
+            lags=self.__config.dataexpl.autocorrlag,
+            method="ols"
+        )
+        plt.title("Partial_Autocorrelation")
+        fig.savefig(os.path.join(
+            *self.__config.dirs2make.figures,
+            self.__config.modelname.modelname + self.__unique_id,
+            "Partial_Autocorrelation" ".png"
+        ))
+        plt.close()
 
