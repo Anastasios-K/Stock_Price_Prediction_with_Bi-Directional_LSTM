@@ -45,7 +45,7 @@ technical_analysis:
   signal_window: 9
 
 label_tolerance:
-  tolerance: 0.001
+  tolerance: 0.000
 
 scaling:
   method: "standardscaler"  # "robust", "minmax" or "standardscaler"
@@ -82,7 +82,7 @@ lstm_h_params:
   drop_out_max: 0.2
   drop_out_step: 1  # number of steps in the given interval min-max
   lr_min: 0.0001
-  lr_max: 0.001
-  lr_step: 3  # number of steps in the given interval min-max
+  lr_max: 0.0001
+  lr_step: 1  # number of steps in the given interval min-max
 
 

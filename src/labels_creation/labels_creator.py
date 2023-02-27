@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from src.interface.interface import Creator
 from src.config.load_conifg import Configurator
-from tensorflow import keras
 
 
 class LabelCreator(Creator):
@@ -42,25 +41,21 @@ class LabelCreator(Creator):
         data_with_diff.loc[
             data_with_diff[cls.__diff_col] > tollerance,
             config.dfstructure.labels
-        ] = 1
+        ] = 0
         # condition 2
         data_with_diff.loc[
             data_with_diff[cls.__diff_col] < -tollerance,
             config.dfstructure.labels
-        ] = 2
+        ] = 1
         # condition 3
         data_with_diff.loc[
             (data_with_diff[cls.__diff_col] < tollerance) &
             (data_with_diff[cls.__diff_col] > -tollerance),
             config.dfstructure.labels
-        ] = 0
+        ] = 2
         # drop Nan values and unused features
         data_with_diff.dropna(inplace=True)
         labels = data_with_diff[config.dfstructure.labels]
-        labels_mtrx = keras.utils.to_categorical(
-            y=labels,
-            num_classes=len(np.unique(labels))
-        )
         data = data_with_diff.drop(
             columns=[
                 cls.__diff_col,
@@ -69,7 +64,7 @@ class LabelCreator(Creator):
             ]
         )
 
-        return data, labels_mtrx
+        return data, labels
 
     @classmethod
     def create_label_weights(cls, train_labels: np.ndarray) -> dict:
@@ -79,11 +74,11 @@ class LabelCreator(Creator):
         """
         lbs_weights = {}
         # capture the 2nd array dimenssion (the number of columns in pd.DataFrame)
-        lbs_amount = train_labels.shape[1]
+        lbs_amount = len(train_labels.unique())
 
         for idx in range(lbs_amount):
             weight_dict = {
-                idx: (1 / np.count_nonzero(train_labels[:, idx] == 1)) * (len(train_labels)) / lbs_amount
+                idx: (1 / np.count_nonzero(train_labels == idx)) * (len(train_labels)) / lbs_amount
             }
             lbs_weights.update(weight_dict)
         return lbs_weights

@@ -202,7 +202,7 @@ class LstmGparams:
     reccactfunc: str
     densactfunc: str
     classactfunc: str
-    batchsiz: int
+    batches: int
 
     @classmethod
     def read_config(cls: t.Type["LstmGparams"], obj: dict):
@@ -214,7 +214,7 @@ class LstmGparams:
             reccactfunc=obj["lstm_g_params"]["reccurent_activation_func_function"],
             densactfunc=obj["lstm_g_params"]["dense_activation"],
             classactfunc=obj["lstm_g_params"]["classification_activation"],
-            batchsiz=obj["lstm_g_params"]["batch_size"],
+            batches=obj["lstm_g_params"]["batch_size"],
         )
 
 

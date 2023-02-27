@@ -3,9 +3,15 @@ venv
 backup
 __pycache__
 private_data
-results
 
-!*/sample
+results/figures/*
+!results/figures/sample*/
+
+results/best_models
+results/models
+results/hyperparams
+results/reports
+mlruns/
 
 *.html
 *.txt
