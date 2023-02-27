@@ -35,10 +35,9 @@ class Pipeline:
         self.train_labels = None
         self.test_labels = None
         self.data_status = list()
-        self.class_weights = None
         self.__model = None
+        self.__class_weights = None
         self.__info_tracker = dict()
-
         self.config = pipeline_config
         self.model_builder = model_builder
 
@@ -106,6 +105,7 @@ class Pipeline:
             data=test_data_no_duplicates,
             config=self.config
         )
+        self.__info_tracker["class_weights"] = {0: None, 1: None}
         self.data_status.append("preprocessed")
 
     def explore_data(self, data: Optional[pd.DataFrame] = None) -> DataExplorator:
@@ -176,7 +176,14 @@ class Pipeline:
                 data=self.test_data,
                 config=self.config
             ).calc_money_flow_index()
-
+        # Drop NaN values from train and test sets
+        # which were created through the process of calculating the technical analysis features
+        self.train_data.dropna(inplace=True)
+        self.test_data.dropna(inplace=True)
+        # Sychronise train and test data with train and test labels again
+        # as we have reemoved rows from the data because of the NaN values
+        self.train_labels = self.train_labels.loc[self.train_data.index[0]:]
+        self.test_labels = self.test_labels.loc[self.test_data.index[0]:]
         self.data_status.append("enriched")
 
     def __create_labels(self) -> None:
@@ -192,6 +199,7 @@ class Pipeline:
             data=self.test_data,
             config=self.config
         )
+        self.__info_tracker["number_of_classes"] = len(self.train_labels.unique())
         self.data_status.append("after_class_creation")
 
     def create_class_weights(self):
@@ -200,7 +208,8 @@ class Pipeline:
         Useful in case of imbalanced data.
         It takes train_data only, as class weights are not calculated for test data.
         """
-        self.class_weights = LabelCreator.create_label_weights(train_labels=self.train_labels)
+        self.__class_weights = LabelCreator.create_label_weights(train_labels=self.train_labels)
+        self.__info_tracker["class_weights"] = self.__class_weights
 
     def scale_data(self, pre_fitted_scaler_path: str = None):
         """
@@ -219,37 +228,49 @@ class Pipeline:
     def build_model(self):
         building_obj = self.model_builder(
             config=self.config,
+            number_of_classes=self.__info_tracker["number_of_classes"],
             unique_id=self.__unique_id,
             train_data=self.train_data,
-            test_data=self.test_data
+            test_data=self.test_data,
+            train_labels=self.train_labels,
+            test_labels=self.test_labels
         )
 
-        self.train_data = building_obj.reshaped_tr_data
-        self.test_data = building_obj.reshaped_ts_data
-        self.train_labels = self.train_labels[self.config.forecasthorizon.forcasthorizon:]
-        self.test_labels = self.test_labels[self.config.forecasthorizon.forcasthorizon:]
-        self.__model = building_obj.keras_tuner_model
+        self.train_data = building_obj.reshaped_train_data
+        self.test_data = building_obj.reshaped_test_data
+        self.train_labels = building_obj.train_labels
+        self.test_labels = building_obj.test_labels
+        self.__model = building_obj.keras_hypermodel
         self.data_status.append("reshaped")
 
     def execute_training_testing_tracking(self):
         training_obj = Trainer(
             config=self.config,
             unique_id=self.__unique_id,
-            class_weights=self.class_weights,
+            class_weights=self.__class_weights,
             reshaped_train_data=self.train_data,
             train_labels=self.train_labels,
             tuner_object=self.__model
         )
-        self.trained_model = training_obj.execute_training()
+        trained_model = training_obj.execute_training()
 
-        # testing_obj = Tester(
-        #     config=self.config,
-        #     unique_id=self.__unique_id,
-        #     test_data=self.test_data,
-        #     test_labels=self.test_labels,
-        #     trained_model=
-        # )
+        testing_obj = Tester(
+            config=self.config,
+            unique_id=self.__unique_id,
+            test_data=self.test_data,
+            test_labels=self.test_labels,
+            trained_model=trained_model
+        )
+        testing_metrics = testing_obj.execute_testing()
 
+        tracking = Tracker(
+            best_models=testing_obj.best_models,
+            config=self.config,
+            tracking_info=self.__info_tracker,
+            unique_id=self.__unique_id,
+            prediction_metrics=testing_metrics
+        )
+        tracking.execute_tracking()
 
 
 if __name__ == "__main__":
@@ -260,20 +281,26 @@ if __name__ == "__main__":
     model_builder = LstmBuilder
 
     run = Pipeline(pipeline_config=config, model_builder=model_builder)
-    run.explore_data().plot_multi_resolution(title="asdf")
-    run.explore_data().plot_distribution(fig_title="asda")
-    run.explore_data().plot_correlation("asd1")
-    run.explore_data().plot_autocorrelation()
-    run.explore_data().cerate_eda_report(report_name="rep123")
+    # run.explore_data().plot_multi_resolution(title="asdf")
+    # run.explore_data().plot_distribution(fig_title="asda")
+    # run.explore_data().plot_correlation("asd1")
+    # run.explore_data().plot_autocorrelation()
+    # run.explore_data().cerate_eda_report(report_name="rep123")
     #
-    # run.enrich_data(sma=True, mfi=True)
+    # run.enrich_data(sma=True, mfi=True, ema=True, macd=True)
     #
-    # run.create_class_weights()
-    # run.build_model()
-    # run.execute_training_testing_tracking()
+    run.create_class_weights()
+    run.build_model()
+    run.execute_training_testing_tracking()
 
-    # xxx = run.reshaped_tr_data
-    # import numpy as np
+    # from keras.models import load_model
     #
-    # yyy = np.array(xxx)
-    # zzz = run.train_labels.values
+    # load1 = load_model("results\\best_models\\sample20230227_133603\\1\\model.h5")
+    # load2 = load_model("results\models\sample20230227_133953\checkpoint.hdf5")
+
+    # xxx = load1.predict(run.test_data)
+
+
+
+
+
