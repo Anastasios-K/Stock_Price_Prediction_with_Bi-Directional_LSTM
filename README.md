@@ -4,7 +4,7 @@
 ---
 
 # <span style="color:#00A3E0">Contents</span>
-- [What is it?](#What-is-it?)
+- [What is it?](#<span style="color:#00A3E0">What-is-it?</span>)
 - [The ML Pipeline](#The-ML-Pipeline)
 
 ## What is it?
