@@ -14,5 +14,4 @@ results/reports
 src/loader
 mlruns/
 
-*.html
 *.txt
