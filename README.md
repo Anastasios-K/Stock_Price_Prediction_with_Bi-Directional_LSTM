@@ -7,7 +7,7 @@
 - [What is it?](#What-is-it?)
 - [The ML Pipeline](#The-ML-Pipeline)
 
-## What is it? <span style="color:blue">some *blue* text</span>.
+## <span style="color:#00A3E0">What is it?</span>
 gasabbab\
 fabsadb\
 asfasc\
