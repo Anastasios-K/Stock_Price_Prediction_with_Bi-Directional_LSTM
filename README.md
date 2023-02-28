@@ -4,8 +4,8 @@
 ---
 
 # <span style="color:#00A3E0">Contents</span>
-- [What is it?](#What is it?)
-- [The ML Pipeline](#The ML Pipeline)
+- [What is it?](What is it?)
+- [The ML Pipeline](The ML Pipeline)
 
 ## What is it?
 gasabbab\
