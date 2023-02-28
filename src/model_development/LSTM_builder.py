@@ -48,6 +48,7 @@ class LstmBuilder(Builder):
         self.reshaped_test_data = np.array(windowed_test_dfs)
         self.train_labels = self.train_labels[window:]
         self.test_labels = self.test_labels[window:]
+
         # For debugging ONLY
         self.__train_data = self.__train_data[window:]
         self.__test_data = self.__test_data[window:]

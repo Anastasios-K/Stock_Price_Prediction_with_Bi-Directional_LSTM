@@ -11,6 +11,7 @@ results/best_models
 results/models
 results/hyperparams
 results/reports
+src/loader
 mlruns/
 
 *.html

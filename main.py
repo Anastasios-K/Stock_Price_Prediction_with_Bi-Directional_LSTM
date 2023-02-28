@@ -1,45 +1,37 @@
-from src.config.load_conifg import Config
-from src.data_access.get_fix_data import DataGetterFixer
-from src.data_engineering.data_ready4analysis import DataReady4Analysis
-from src.data_exploration.data_exploration import DataExploration
-from src.secondary_modules.dir_creator import DirsCreator
-from src.data_technical_analysis_features.data_with_ta_features import TaFeaturesAddition
-# from src.model_data_preparation.create_labels import LabelsCreator
+from src.pipeline.pipeline import Pipeline
+from src.config.load_conifg import Configurator
+from src.model_development.LSTM_builder import LstmBuilder
 
 
-class RunStockPredictionProject:
+class RunStockPrediction:
 
     def __init__(self, config_path):
-        config = Config(config_path=config_path)
-        DirsCreator(config=config)
-        data_fixer = DataGetterFixer(config=config)
-
-        self.data_engineering = DataReady4Analysis(data_getter_fixer_obj=data_fixer)
-
-        data_exploration = DataExploration(data_ready4analysis=self.data_engineering)
-        data_exploration.plot_data_distribution()
-        # data_exploration.pd_profiling_eda(report_name="EDA_PDprofiling")
-        data_exploration.plot_correlation(fig_title="correlation_analysis")
-        data_exploration.plot_autocorrelations()
-
-        self.tech_anal = TaFeaturesAddition(data_ready4analysis=self.data_engineering)
-
-        #
-        # self.data_exploration = DataExploration(data_ready4analysis=self.technical_analysis)
-        # self.data_exploration.plot_data_distribution()
-        # # self.data_exploration.pd_profiling_eda(report_name="EDA_PDprofiling")
-        # self.data_exploration.plot_correlation(fig_title="correlation_analysis")
-        # self.data_exploration.plot_autocorrelations()
-        #
-        # self.prep_data_modelling = LabelsCreator(data_ready4analysis=self.technical_analysis)\
-        #     .drop_nan_rows()\
-        #     .drop_unused_features()\
-        #     .split_data()
+        # Create config object
+        config = Configurator(config_path=config_path)
+        # Create model_builder object
+        model_builder = LstmBuilder
+        # Create pipeline object
+        self.pipeline = Pipeline(pipeline_config=config, model_builder=model_builder)
+        pipe = self.pipeline
+        # Execute exploration
+        pipe.explore_data().plot_multi_resolution(title="data_overview_multiple_resolution")
+        pipe.explore_data().plot_distribution(fig_title="data_distributions")
+        pipe.explore_data().plot_correlation("correltion_heatmap")
+        pipe.explore_data().plot_autocorrelation()
+        pipe.explore_data().cerate_eda_report(report_name="explanatory_data_analysis_report")
+        # Execute enrichment
+        pipe.enrich_data(sma=False, mfi=True, ema=False, macd=True)
+        # Scale data
+        pipe.scale_data()
+        # Build model
+        pipe.build_model()
+        # Execute training testing and tracking
+        pipe.execute_training_testing_tracking()
 
 
 if __name__ == "__main__":
 
-    CONFIG_PATH = "C:\\Users\\Anast\\pythonProject\\Crypto_Prise_Prediction\\src\\config\\config.yaml"
-    run = RunStockPredictionProject(config_path=CONFIG_PATH)
+    CONFIG_PATH = "src\\config\\config.yaml"
+    run = RunStockPrediction(config_path=CONFIG_PATH)
 
 

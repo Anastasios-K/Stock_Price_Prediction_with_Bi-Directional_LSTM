@@ -6,11 +6,11 @@ from src.helper.helper import Helper
 from src.config.load_conifg import Configurator
 from src.data_exploration.data_explorator import DataExplorator
 from src.labels_creation.labels_creator import LabelCreator
-from src.model_development.LSTM_builder import LstmBuilder
 from src.model_development.scaler import scaler
 from src.model_development.trainer import Trainer
 from src.model_development.tester import Tester
 from src.model_development.tracker import Tracker
+from src.info_tracker.info_tracker import InfoTracker
 
 from src.data_engineering.fix_data_format import fix_data_format
 from src.data_engineering.handle_nan_values import count_nan_values, replace_nan_values
@@ -37,7 +37,7 @@ class Pipeline:
         self.data_status = list()
         self.__model = None
         self.__class_weights = None
-        self.__info_tracker = dict()
+        self.info_tracker = InfoTracker()
         self.config = pipeline_config
         self.model_builder = model_builder
 
@@ -45,7 +45,6 @@ class Pipeline:
         Helper.create_required_dirs(config=self.config, unique_id=self.__unique_id)
         self.__raw_data = pd.read_csv(self.config.paths.datapath)
         self.__prepare_data()
-        self.__create_labels()
 
     def __prepare_data(self) -> None:
         """
@@ -72,11 +71,11 @@ class Pipeline:
             shuffle=False
         )
         # Count duplicates in train and test data separately. Save them in the info_tracker
-        self.__info_tracker["train_set_duplicates"] = count_duplicates(
+        self.info_tracker.train_set_duplicates = count_duplicates(
             data=train_data,
             config=self.config
         )
-        self.__info_tracker["test_set_duplicates"] = count_duplicates(
+        self.info_tracker.test_set_duplicates = count_duplicates(
             data=test_data,
             config=self.config
         )
@@ -90,10 +89,10 @@ class Pipeline:
             config=self.config
         )
         # Count NaN values in train and test data separately. Save them in the info_tracker
-        self.__info_tracker["train_set_NaNs"] = count_nan_values(
+        self.info_tracker.train_set_NaNs = count_nan_values(
             data=train_data,
         )
-        self.__info_tracker["test_set_NaNs"] = count_nan_values(
+        self.info_tracker.test_set_NaNs= count_nan_values(
             data=test_data,
         )
         # Fill NaN values in train and test set separately.
@@ -105,8 +104,8 @@ class Pipeline:
             data=test_data_no_duplicates,
             config=self.config
         )
-        self.__info_tracker["class_weights"] = {0: None, 1: None}
-        self.data_status.append("preprocessed")
+        if "preprocessed" not in self.data_status:
+            self.data_status.append("preprocessed")
 
     def explore_data(self, data: Optional[pd.DataFrame] = None) -> DataExplorator:
         """
@@ -122,7 +121,8 @@ class Pipeline:
             config=self.config,
             unique_id=self.__unique_id
         )
-        self.data_status.append("explored")
+        if "explored" not in self.data_status:
+            self.data_status.append("explored")
         return exploration
 
     def enrich_data(self,
@@ -180,36 +180,8 @@ class Pipeline:
         # which were created through the process of calculating the technical analysis features
         self.train_data.dropna(inplace=True)
         self.test_data.dropna(inplace=True)
-        # Sychronise train and test data with train and test labels again
-        # as we have reemoved rows from the data because of the NaN values
-        self.train_labels = self.train_labels.loc[self.train_data.index[0]:]
-        self.test_labels = self.test_labels.loc[self.test_data.index[0]:]
-        self.data_status.append("enriched")
-
-    def __create_labels(self) -> None:
-        """
-        Create labels.
-        Update both data and labels to secure synchronisation.
-        """
-        self.train_data, self.train_labels = LabelCreator.create_labels(
-            data=self.train_data,
-            config=self.config
-        )
-        self.test_data, self.test_labels = LabelCreator.create_labels(
-            data=self.test_data,
-            config=self.config
-        )
-        self.__info_tracker["number_of_classes"] = len(self.train_labels.unique())
-        self.data_status.append("after_class_creation")
-
-    def create_class_weights(self):
-        """
-        Optional method to create class weights.
-        Useful in case of imbalanced data.
-        It takes train_data only, as class weights are not calculated for test data.
-        """
-        self.__class_weights = LabelCreator.create_label_weights(train_labels=self.train_labels)
-        self.__info_tracker["class_weights"] = self.__class_weights
+        if "enriched" not in self.data_status:
+            self.data_status.append("enriched")
 
     def scale_data(self, pre_fitted_scaler_path: str = None):
         """
@@ -223,17 +195,35 @@ class Pipeline:
             unique_id=self.__unique_id,
             pre_fitted_scaler_path=pre_fitted_scaler_path
         )
-        self.data_status.append("scaled")
+        if "scaled" not in self.data_status:
+            self.data_status.append("scaled")
 
     def build_model(self):
+        """
+        1. Create labels for train and test sets.
+            This is the first pipeline step where the labels are required.
+        2. Create and set a keras hypermodel.
+        3. Refresh train and test data, train and test label.
+        """
+        # Create train data and labels
+        train_data, train_labels = LabelCreator.create_labels(
+            data=self.train_data,
+            config=self.config
+        )
+        # Create test data and labels
+        test_data, test_labels = LabelCreator.create_labels(
+            data=self.test_data,
+            config=self.config
+        )
+        # Build hypermodel
         building_obj = self.model_builder(
             config=self.config,
-            number_of_classes=self.__info_tracker["number_of_classes"],
+            number_of_classes=len(train_labels.unique()),
             unique_id=self.__unique_id,
-            train_data=self.train_data,
-            test_data=self.test_data,
-            train_labels=self.train_labels,
-            test_labels=self.test_labels
+            train_data=train_data,
+            test_data=test_data,
+            train_labels=train_labels,
+            test_labels=test_labels
         )
 
         self.train_data = building_obj.reshaped_train_data
@@ -241,9 +231,14 @@ class Pipeline:
         self.train_labels = building_obj.train_labels
         self.test_labels = building_obj.test_labels
         self.__model = building_obj.keras_hypermodel
-        self.data_status.append("reshaped")
+        if "reshaped" not in self.data_status:
+            self.data_status.append("reshaped")
 
-    def execute_training_testing_tracking(self):
+    def execute_training_testing_tracking(self, class_weights: bool = True):
+        if class_weights:
+            self.__class_weights = LabelCreator.create_label_weights(train_labels=self.train_labels)
+            self.info_tracker.class_weights = self.__class_weights
+
         training_obj = Trainer(
             config=self.config,
             unique_id=self.__unique_id,
@@ -266,41 +261,8 @@ class Pipeline:
         tracking = Tracker(
             best_models=testing_obj.best_models,
             config=self.config,
-            tracking_info=self.__info_tracker,
+            tracking_info=self.info_tracker,
             unique_id=self.__unique_id,
             prediction_metrics=testing_metrics
         )
         tracking.execute_tracking()
-
-
-if __name__ == "__main__":
-
-    CONFIG_PATH = "src\\config\\config.yaml"
-
-    config = Configurator(config_path=CONFIG_PATH)
-    model_builder = LstmBuilder
-
-    run = Pipeline(pipeline_config=config, model_builder=model_builder)
-    # run.explore_data().plot_multi_resolution(title="asdf")
-    # run.explore_data().plot_distribution(fig_title="asda")
-    # run.explore_data().plot_correlation("asd1")
-    # run.explore_data().plot_autocorrelation()
-    # run.explore_data().cerate_eda_report(report_name="rep123")
-    #
-    # run.enrich_data(sma=True, mfi=True, ema=True, macd=True)
-    #
-    run.create_class_weights()
-    run.build_model()
-    run.execute_training_testing_tracking()
-
-    # from keras.models import load_model
-    #
-    # load1 = load_model("results\\best_models\\sample20230227_133603\\1\\model.h5")
-    # load2 = load_model("results\models\sample20230227_133953\checkpoint.hdf5")
-
-    # xxx = load1.predict(run.test_data)
-
-
-
-
-
