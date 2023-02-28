@@ -48,8 +48,9 @@ class Tracker:
 
     def __track_extra_info(self) -> None:
         tracking_info = self.__tracking_info
-        for item in tracking_info:
-            mlflow.log_param(item, tracking_info[item])
+        for item in tracking_info.__dict__.items():
+            if not item[0].startswith("__"):
+                mlflow.log_param(item[0], item[1])
 
     def __track_classification_metrics(self) -> None:
         for element in self.__prediction_metrics:
@@ -63,10 +64,10 @@ class Tracker:
         mlflow.set_experiment(experiment_name=self.__create_experiment_name())
         with mlflow.start_run(run_name=f"run_{self.__create_experiment_name()}") as run:
             self.__track_hyper_params()
-            print("HPs")
+            print("HPs tracked")
             self.__track_general_params()
-            print("GPs")
+            print("GPs tracked")
             self.__track_extra_info()
-            print("InfoTracker")
+            print("InfoTracker tracked")
             self.__track_classification_metrics()
-            print("METRICS")
+            print("METRICS tracked")

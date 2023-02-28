@@ -44,7 +44,7 @@ def scaler(
         joblib.dump(
             scaler,
             os.path.join(
-                *config.dirs2make.figures,
+                *config.dirs2make.best_models,
                 config.modelname.modelname + unique_id,
                 f"{config.modelname.modelname}.pkl"
             )

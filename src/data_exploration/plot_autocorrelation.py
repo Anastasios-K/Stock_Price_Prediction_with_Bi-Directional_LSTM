@@ -35,8 +35,6 @@ class AutocorrPlot:
         plt.close()
 
     def __plot_pacf(self) -> None:
-        pass
-        print("pacf")
         fig = tsaplots.plot_pacf(
             self.__data[self.__config.dfstructure.close],
             lags=self.__config.dataexpl.autocorrlag,

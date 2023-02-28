@@ -21,7 +21,7 @@ class DataExplorator(Explorator):
         self.__config = config
         self.__unique_id = unique_id
 
-    def plot_multi_resolution(self, title):
+    def plot_multi_resolution(self, title: str) -> None:
         """ Create and save a plot of different resolutions of the given data. """
         MultiResolution(
             data=self.__data,
@@ -30,7 +30,7 @@ class DataExplorator(Explorator):
             title=title
         )
 
-    def cerate_eda_report(self, report_name: str):
+    def cerate_eda_report(self, report_name: str) -> None:
         """ Create Explanatory Data Analysis Report, using pandas profiling. """
         create_eda_report(
             data=self.__data,
@@ -39,7 +39,7 @@ class DataExplorator(Explorator):
             report_name=report_name
         )
 
-    def plot_distribution(self, fig_title):
+    def plot_distribution(self, fig_title: str) -> None:
         """ Plot distribution for each data feature. """
         create_distr_subplots(
             data=self.__data,
@@ -48,7 +48,7 @@ class DataExplorator(Explorator):
             file_name=fig_title
         )
 
-    def plot_correlation(self, fig_title):
+    def plot_correlation(self, fig_title: str) -> None:
         """ Plot correlation heatmap. """
         CorrPlot(
             data=self.__data,
@@ -57,7 +57,7 @@ class DataExplorator(Explorator):
             fig_title=fig_title
         )
 
-    def plot_autocorrelation(self):
+    def plot_autocorrelation(self) -> None:
         """ Plot Autocorrelation. """
         AutocorrPlot(
             data=self.__data,
