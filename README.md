@@ -3,11 +3,56 @@
 
 ---
 
-# <span style="color:#00A3E0">Contents</span>
-- [What is it?](#What-is-it?)
-- [The ML Pipeline](#The-ML-Pipeline)
 
-## <span style="color:#00A3E0">What is it?</span>
+## Contents
+- [Overview](#Overview)
+- [How to use](#How-to-use)
+- [The Data](#The-Data)
+- [Outcome](#Outcome)
+- [The Pipeline](#The-Pipeline)
+  - [Data Preprocessing](#Data-Preprocessing)
+  - [Data Exploration](#Data-Preprocessing)
+  - [Technical Analysis Enrichment](#Technical-Analysis-Enrichment)
+  - [Model Development](#Model-Development)
+  - [Class Creation](#Class-Creation)
+  - [Training](#Training)
+  - [Testing](#Testing)
+  - [Tracking](#Tracking)
+- [How to Build a New model](#How-to-Build-a-New-model)
+- [Relevant reading](#Relevant-reading)
 
+## Overview
+An ML pipeline for time-series (stock price) classification which is developed taking into consideration \
+the main principles of Object-Oriented and Data-Oriented Programming. The current Data-Oriented Strategy \
+Pattern, allows users to change the behavior of the pipeline, choosing between different TensorFlow\Keras \
+algorithms. This design also assures the execution of mandatory steps whereas, it provides flexibility between \
+a number of optional functions. For more detail, look at the [Pipeline](#The-Pipeline) section.
 
-## The ML Pipeline
+## How to use
+
+## The Data
+
+## Outcome
+
+## The Pipeline
+
+### Data Preprocessing
+
+### Data Exploration
+
+### Technical Analysis Enrichment
+
+### Model Development
+
+### Class Creation
+
+### Training
+
+### Testing
+
+### Tracking
+
+## How to Build a New model
+
+## Relevant reading
+asdf
