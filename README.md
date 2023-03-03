@@ -3,6 +3,7 @@
 
 ---
 
+
 ## Contents
 - [Overview](#Overview)
 - [How to use](#How-to-use)
@@ -28,7 +29,6 @@ algorithms. This design also assures the execution of mandatory steps whereas, a
 access to a number of optional functions. For more detail, look at the [Pipeline](#The-Pipeline) section.
 
 ## How to use
-
 #### <span style="color:#00A3E0">1. Run it without using the Docker file</span>
 
 - Create virtual environment.
@@ -47,9 +47,8 @@ $ pip install -r requirements.txt
 ```
 $ python main.py
 ```
-  
-#### <span style="color:#00A3E0">2. Run it through the Docker file</span>
-
+- Modify data_path parameter in the path field of the [config-file](https://github.com/Anastasios-K/Stock_Price_Prediction_with_Bi-Directional_LSTM/blob/main/src/config/config.yaml), \ 
+if the data is not located in the default data folder or if a different dataset is in use.
 
 ## The Data
 The default dataset is the Tesco plc daily stock price. \
@@ -156,5 +155,4 @@ It uses MLFlow and saves the following:
 ## How to Build a New model
 
 ## Relevant reading
-
-
+asdf
