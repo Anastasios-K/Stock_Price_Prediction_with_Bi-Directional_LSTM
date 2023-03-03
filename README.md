@@ -30,6 +30,12 @@ a number of optional functions. For more detail, look at the [Pipeline](#The-Pip
 
 ## How to use
 
+- Modify data path in the configuration file 
+  config.yaml(github.com/Anastasios-K/Stock_Price_Prediction_with_Bi-Directional_LSTM/blob/main/src/config/config.yaml), 
+  if any of the case below  
+  If the data is not located in the default data folder.
+  Or if a different dataset 
+
 ## The Data
 
 ## Outcome
