@@ -82,10 +82,11 @@ for a sample run.
 
 - Create and save an Explanatory Data Analysis report.
 - Create and save interactive plot of multiple data resolutions.
+![overview](https://github.com/Anastasios-K/Stock_Price_Prediction_with_Bi-Directional_LSTM/blob/main/results/figures/sample20230304_193857/data_overview_multiple_resolution_sample.png)
 - Calculate correlation and save interactive plot.
 - Calculate autocorrelation and partial autocorrelation and save plots. \
   ![autocorrelation](https://github.com/Anastasios-K/Stock_Price_Prediction_with_Bi-Directional_LSTM/blob/main/results/figures/sample20230304_193857/Autocorrelation_sample.png)
-  ![Partial Autocorrelation](https://github.com/Anastasios-K/Stock_Price_Prediction_with_Bi-Directional_LSTM/blob/main/results/figures/sample20230304_193857/Partial_Autocorrelation_sample.png)
+  ![partial putocorrelation](https://github.com/Anastasios-K/Stock_Price_Prediction_with_Bi-Directional_LSTM/blob/main/results/figures/sample20230304_193857/Partial_Autocorrelation_sample.png)
 - Plot distribution of each data feature and save plot.
 
 ### Technical Analysis Enrichment
