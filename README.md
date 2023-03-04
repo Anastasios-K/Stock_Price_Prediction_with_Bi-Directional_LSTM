@@ -98,7 +98,7 @@ The users have to call the corresponding method from the Pipeline object and def
   [money flow index](https://www.investopedia.com/terms/m/mfi.asp)
   
 ### Model Development
-***Mandatoty step*** \
+***Mandatory step*** \
 The users have to initiate a model object and pass it to the pipeline. \
 At the moment, an LSTM class is availbale only. \
 A Bi-Directional LSTM class is coming soon. \
@@ -118,7 +118,7 @@ Else if the tolerance is higher than zero (0), \
 Then three classes 0, 1 and 2 are created, leading to a multiclass classification.
 
 ### Training
-***Mandatoty step*** \
+***Mandatory step*** \
 This step includes the training, validation and hyper-parameter tuning processes. \
 - [Keras-Tuner](https://keras.io/keras_tuner/) is used for the tuning process.
 - A [TensorBoard](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/TensorBoard)
@@ -130,7 +130,7 @@ This step includes the training, validation and hyper-parameter tuning processes
   So, users can restore trainig process at any point.
 
 ### Testing
-***Mandatoty step*** \
+***Mandatory step*** \
 This step includes the testing process only. \
 - Extract and save the five best model from the trained Keras hypermodel.
 - Predict the test set labels using the TOP 1 model.
@@ -145,7 +145,7 @@ This step includes the testing process only. \
   False Negative
   
 ### Tracking
-***Mandatoty step*** \
+***Mandatory step*** \
 This step is to track the performance of the whole trial/run. \
 It uses MLFlow and saves the following:
 - The general parameters of the trial (look at the config-file)
@@ -155,4 +155,4 @@ It uses MLFlow and saves the following:
 ## How to Build a New model
 
 ## Relevant reading
-asdf
+
