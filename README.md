@@ -84,7 +84,7 @@ for a sample run.
 - Create and save interactive plot of multiple data resolutions.
 - Calculate correlation and save interactive plot.
 - Calculate autocorrelation and partial autocorrelation and save plots. \
-  [autocorrelation](https://github.com/Anastasios-K/Stock_Price_Prediction_with_Bi-Directional_LSTM/blob/main/results/figures/sample20230304_193857/Autocorrelation_sample.png)
+  ![autocorrelation](https://github.com/Anastasios-K/Stock_Price_Prediction_with_Bi-Directional_LSTM/blob/main/results/figures/sample20230304_193857/Autocorrelation_sample.png)
 - Plot distribution of each data feature and save plot.
 
 ### Technical Analysis Enrichment
